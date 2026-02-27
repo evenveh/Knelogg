@@ -265,6 +265,71 @@
       font-family: 'DM Sans', sans-serif; padding: 8px 14px; white-space: nowrap; flex-shrink: 0;
     }
     .dismiss-btn { background: none; border: none; color: var(--text3); font-size: 20px; padding: 0 4px; flex-shrink: 0; }
+    /* STATS */
+    .stat-section { margin-bottom: 20px; }
+    .stat-section-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .summary-tile {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 14px 12px; text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .summary-tile .tile-val { font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1.1; margin-bottom: 4px; }
+    .summary-tile .tile-lbl { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
+
+    .trend-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+    .trend-title { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px; }
+    .chart-wrap { width: 100%; overflow-x: auto; }
+    canvas { display: block; }
+
+    .ex-filter { margin-bottom: 14px; }
+    .ex-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .pill {
+      background: var(--surface2); border: 1.5px solid var(--border2);
+      border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 600;
+      color: var(--text2); cursor: pointer; transition: all 0.15s;
+    }
+    .pill.active { background: var(--accent-light); border-color: var(--accent2); color: var(--accent); }
+
+    .ex-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .ex-stat-row:last-child { border-bottom: none; }
+    .ex-stat-name { color: var(--text); font-weight: 600; flex: 1; }
+    .ex-stat-vals { display: flex; gap: 14px; color: var(--text2); font-size: 12px; font-family: 'DM Mono', monospace; }
+    .ex-stat-best { color: var(--accent); font-weight: 700; }
+
+    .pain-trend-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .pain-trend-row:last-child { border-bottom: none; }
+    .pain-trend-date { color: var(--text3); font-family: 'DM Mono', monospace; font-size: 11px; width: 80px; flex-shrink: 0; }
+    .pain-bar-wrap { flex: 1; display: flex; gap: 4px; align-items: center; }
+    .pain-bar { height: 10px; border-radius: 5px; min-width: 3px; transition: width 0.3s; }
+    /* EDIT MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      z-index: 200; display: flex; align-items: flex-end;
+      animation: fadeIn 0.15s ease;
+    }
+    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+    .modal {
+      background: var(--surface); border-radius: 20px 20px 0 0;
+      width: 100%; max-height: 92dvh; overflow-y: auto;
+      padding: 20px 16px 40px;
+      animation: slideUp 0.2s ease;
+    }
+    @keyframes slideUp { from { transform:translateY(60px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .modal-title { font-size: 17px; font-weight: 700; }
+    .modal-close {
+      background: var(--surface2); border: none; border-radius: 50%;
+      width: 32px; height: 32px; font-size: 18px; color: var(--text2);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .edit-btn {
+      background: none; border: 1.5px solid var(--border2); border-radius: 8px;
+      color: var(--accent); font-size: 12px; font-weight: 600;
+      padding: 7px 14px; margin-top: 10px; margin-right: 8px;
+      transition: all 0.15s;
+    }
+    .edit-btn:active { background: var(--accent-light); }
   </style>
 </head>
 <body>
@@ -275,6 +340,7 @@
   <div class="tabs">
     <button class="tab active" id="tab-log" onclick="switchTab('log')">Ny økt</button>
     <button class="tab" id="tab-history" onclick="switchTab('history')">Logg (<span id="count">0</span>)</button>
+    <button class="tab" id="tab-stats" onclick="switchTab('stats')">Statistikk</button>
   </div>
 </div>
 
@@ -321,6 +387,42 @@
   <div id="view-history" style="display:none">
     <div id="history-container"></div>
   </div>
+
+  <!-- STATS VIEW -->
+  <div id="view-stats" style="display:none">
+    <div id="stats-container"></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="edit-modal" class="modal-overlay" style="display:none" onclick="closeEditIfBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Rediger økt</div>
+      <button class="modal-close" onclick="closeEdit()">×</button>
+    </div>
+    <div class="grid-2" style="margin-bottom:14px">
+      <div><label>Dato</label><input type="date" id="e-date"></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">Øvelser</div>
+      <div id="edit-exercises-container"></div>
+      <button class="add-ex-btn" onclick="editAddExercise()">+ Legg til øvelse</button>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">Samlet smerteregistrering (0–10)</div>
+      <div class="grid-3">
+        <div><label>Under økt</label><input type="number" id="e-pain-during" min="0" max="10" placeholder="0"></div>
+        <div><label>Etter 24t</label><input type="number" id="e-pain-24" min="0" max="10" placeholder="0"></div>
+        <div><label>Etter 48t</label><input type="number" id="e-pain-48" min="0" max="10" placeholder="0"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <label>Notater</label>
+      <textarea id="e-notes" rows="3" placeholder="Notater..."></textarea>
+    </div>
+    <button class="save-btn" onclick="saveEdit()">Lagre endringer</button>
+  </div>
 </div>
 
 <script>
@@ -335,7 +437,7 @@ let expandedId = null;
 let deferredPrompt = null;
 
 function newEx() {
-  return { name: "", sets: "", reps: "", weight: "", intensity: "", pain: "", comment: "" };
+  return { name: "", sets: "", reps: "", weight: "", intensity: "", angle: "", pain: "", comment: "" };
 }
 
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -355,6 +457,254 @@ async function installApp() {
 if ('serviceWorker' in navigator) {
   const swCode = `const C='knelogg-v2';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['.']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
   navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }))).catch(()=>{});
+}
+
+// ── STATISTICS ────────────────────────────────────────────────
+let statsExFilter = null; // null = all
+
+function renderStats() {
+  const c = document.getElementById('stats-container');
+  const sorted = [...entries].sort((a,b) => a.date.localeCompare(b.date));
+
+  if (!sorted.length) {
+    c.innerHTML = `<div class="empty-state">Ingen data ennå.<br><span class="empty-link" onclick="switchTab('log')">Registrer din første økt →</span></div>`;
+    return;
+  }
+
+  // ── helpers ──
+  const pNum = v => (v !== '' && v !== null && v !== undefined && !isNaN(Number(v))) ? Number(v) : null;
+  const painCol = v => v <= 2 ? '#2d7a4f' : v <= 5 ? '#d4890a' : '#c0392b';
+
+  // ── summary tiles ──
+  const totalSessions = sorted.length;
+  const pain48vals = sorted.map(e => pNum(e.pain48h)).filter(v => v !== null);
+  const avgPain48 = pain48vals.length ? (pain48vals.reduce((a,b)=>a+b,0)/pain48vals.length).toFixed(1) : '—';
+  const trend48 = pain48vals.length >= 2
+    ? (pain48vals[pain48vals.length-1] - pain48vals[0] < 0 ? '↓ Bedre' : pain48vals[pain48vals.length-1] - pain48vals[0] > 0 ? '↑ Verre' : '→ Stabil')
+    : '—';
+  const trendColor = trend48 === '↓ Bedre' ? 'var(--green)' : trend48 === '↑ Verre' ? 'var(--red)' : 'var(--text3)';
+
+  // ── all exercises across all sessions ──
+  const allExNames = [...new Set(sorted.flatMap(e => e.exercises.filter(x=>x.name).map(x=>x.name)))];
+
+  // ── per-exercise best weight ──
+  const exStats = {};
+  allExNames.forEach(name => {
+    const instances = sorted.flatMap(e =>
+      e.exercises.filter(x => x.name === name).map(x => ({ ...x, date: e.date }))
+    );
+    const weights = instances.map(x => parseFloat(x.weight)).filter(w => !isNaN(w) && w > 0);
+    const painVals = instances.map(x => pNum(x.pain)).filter(v => v !== null);
+    exStats[name] = {
+      sessions: [...new Set(instances.map(x=>x.date))].length,
+      bestWeight: weights.length ? Math.max(...weights) : null,
+      latestWeight: (() => {
+        for (let i = instances.length-1; i >= 0; i--) {
+          const w = parseFloat(instances[i].weight);
+          if (!isNaN(w) && w > 0) return w;
+        }
+        return null;
+      })(),
+      avgPain: painVals.length ? (painVals.reduce((a,b)=>a+b,0)/painVals.length).toFixed(1) : null,
+      history: instances.map(x => ({ date: x.date, weight: parseFloat(x.weight)||null, pain: pNum(x.pain) }))
+    };
+  });
+
+  // ── filter pills ──
+  const activeFilter = statsExFilter && allExNames.includes(statsExFilter) ? statsExFilter : null;
+
+  let html = '';
+
+  // Summary
+  html += `<div class="summary-grid">
+    <div class="summary-tile"><div class="tile-val">${totalSessions}</div><div class="tile-lbl">Økter</div></div>
+    <div class="summary-tile"><div class="tile-val">${avgPain48}</div><div class="tile-lbl">Snitt 48t</div></div>
+    <div class="summary-tile"><div class="tile-val" style="color:${trendColor};font-size:16px">${trend48}</div><div class="tile-lbl">Trend</div></div>
+  </div>`;
+
+  // Pain over time chart
+  const painEntries = sorted.filter(e => pNum(e.pain48h) !== null || pNum(e.painDuring) !== null || pNum(e.pain24h) !== null);
+  if (painEntries.length >= 2) {
+    html += `<div class="trend-card">
+      <div class="trend-title">Smertetrend over tid</div>
+      <div class="chart-wrap"><canvas id="pain-chart" height="180"></canvas></div>
+    </div>`;
+  }
+
+  // Exercise filter pills
+  if (allExNames.length > 1) {
+    html += `<div class="trend-card">
+      <div class="trend-title">Øvelser – filter</div>
+      <div class="ex-pills">
+        <div class="pill ${!activeFilter ? 'active' : ''}" onclick="setExFilter(null)">Alle</div>
+        ${allExNames.map(n => `<div class="pill ${activeFilter===n?'active':''}" onclick="setExFilter('${n.replace(/'/g,"\\'")}')"> ${n}</div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Exercise performance table
+  const exToShow = activeFilter ? [activeFilter] : allExNames;
+  html += `<div class="trend-card">
+    <div class="trend-title">Beste løft per øvelse</div>`;
+  exToShow.forEach(name => {
+    const s = exStats[name];
+    html += `<div class="ex-stat-row">
+      <div class="ex-stat-name">${name}</div>
+      <div class="ex-stat-vals">
+        <span>${s.sessions} økt${s.sessions!==1?'er':''}</span>
+        ${s.bestWeight !== null ? `<span class="ex-stat-best">${s.bestWeight} kg</span>` : ''}
+        ${s.avgPain !== null ? `<span style="color:${painCol(Number(s.avgPain))}">${s.avgPain}/10</span>` : ''}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Weight trend for selected exercise (or most frequent)
+  const exForChart = activeFilter || allExNames.reduce((best, n) => exStats[n].sessions > (exStats[best]?.sessions||0) ? n : best, allExNames[0]);
+  const weightHistory = exStats[exForChart]?.history.filter(h => h.weight !== null && !isNaN(h.weight)) || [];
+  if (weightHistory.length >= 2) {
+    html += `<div class="trend-card">
+      <div class="trend-title">Vektutvikling – ${exForChart}</div>
+      <div class="chart-wrap"><canvas id="weight-chart" height="160"></canvas></div>
+    </div>`;
+  }
+
+  // Pain per session list (last 8)
+  html += `<div class="trend-card">
+    <div class="trend-title">Smerte per økt (nyeste først)</div>`;
+  const last8 = [...sorted].reverse().slice(0, 8);
+  last8.forEach(e => {
+    const p = pNum(e.pain48h);
+    const pd = pNum(e.painDuring);
+    const val = p !== null ? p : pd;
+    const maxVal = 10;
+    html += `<div class="pain-trend-row">
+      <div class="pain-trend-date">${e.date.slice(5)}</div>
+      <div class="pain-bar-wrap">
+        ${val !== null
+          ? `<div class="pain-bar" style="width:${Math.max(6, (val/maxVal)*100)}%;background:${painCol(val)}"></div>
+             <span style="font-size:12px;font-weight:700;color:${painCol(val)}">${val}/10 ${p !== null ? '(48t)' : '(under)'}</span>`
+          : `<span style="color:var(--text3);font-size:12px">Ikke registrert</span>`}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  c.innerHTML = html;
+
+  // Draw pain chart
+  if (painEntries.length >= 2) {
+    drawLineChart('pain-chart', painEntries.map(e => ({
+      label: e.date.slice(5),
+      v1: pNum(e.painDuring),
+      v2: pNum(e.pain24h),
+      v3: pNum(e.pain48h)
+    })), ['Smerte under', 'Smerte 24t', 'Smerte 48t'], ['#d4890a', '#7b6cf0', '#3d6b4f']);
+  }
+
+  // Draw weight chart
+  if (weightHistory.length >= 2) {
+    drawLineChart('weight-chart', weightHistory.map(h => ({
+      label: h.date.slice(5),
+      v1: h.weight,
+      v2: null
+    })), ['Kg'], ['#3d6b4f'], true);
+  }
+}
+
+function setExFilter(name) {
+  statsExFilter = name;
+  renderStats();
+}
+
+function drawLineChart(canvasId, data, seriesNames, colors, noNull = false) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.offsetWidth || 300;
+  const H = parseInt(canvas.getAttribute('height')) || 160;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const pad = { top: 24, right: 12, bottom: 32, left: 32 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+
+  const series = [
+    data.map(d => d.v1),
+    data.map(d => d.v2),
+    data.map(d => d.v3)
+  ].slice(0, seriesNames.length);
+
+  const allVals = series.flat().filter(v => v !== null && v !== undefined);
+  if (!allVals.length) return;
+  const minV = Math.min(...allVals);
+  const maxV = Math.max(...allVals);
+  const range = maxV - minV || 1;
+
+  const xPos = i => pad.left + (data.length > 1 ? (i / (data.length - 1)) * cw : cw / 2);
+  const yPos = v => pad.top + ch - ((v - minV) / range) * ch;
+
+  // grid lines
+  ctx.strokeStyle = '#e2e2dc';
+  ctx.lineWidth = 1;
+  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
+    const y = pad.top + ch * (1 - f);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
+    const val = (minV + range * f).toFixed(noNull ? 0 : 1);
+    ctx.fillStyle = '#9a9a92'; ctx.font = '9px DM Mono, monospace'; ctx.textAlign = 'right';
+    ctx.fillText(val, pad.left - 4, y + 3);
+  });
+
+  // x labels
+  ctx.fillStyle = '#9a9a92'; ctx.font = '9px DM Mono, monospace'; ctx.textAlign = 'center';
+  const step = Math.max(1, Math.floor(data.length / 6));
+  data.forEach((d, i) => {
+    if (i % step === 0 || i === data.length - 1) {
+      ctx.fillText(d.label, xPos(i), H - 6);
+    }
+  });
+
+  // draw each series
+  series.forEach((s, si) => {
+    const pts = s.map((v, i) => (v !== null && v !== undefined) ? { x: xPos(i), y: yPos(v), v } : null).filter(Boolean);
+    if (pts.length < 1) return;
+    ctx.strokeStyle = colors[si] || '#3d6b4f';
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    if (pts.length >= 2) {
+      ctx.beginPath();
+      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.stroke();
+    }
+    // dots
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = colors[si] || '#3d6b4f';
+      ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+      ctx.stroke();
+    });
+  });
+
+  // legend
+  let lx = pad.left;
+  const legendY = pad.top - 10;
+  seriesNames.forEach((n, i) => {
+    ctx.fillStyle = colors[i];
+    ctx.fillRect(lx, legendY - 2, 14, 3);
+    ctx.fillStyle = '#5a5a54';
+    ctx.font = '10px DM Sans, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(n, lx + 18, legendY + 2);
+    lx += ctx.measureText(n).width + 32;
+  });
 }
 
 function load() {
@@ -379,48 +729,112 @@ function updateCount() {
 function switchTab(tab) {
   document.getElementById('view-log').style.display = tab === 'log' ? 'block' : 'none';
   document.getElementById('view-history').style.display = tab === 'history' ? 'block' : 'none';
-  document.getElementById('tab-log').className = 'tab' + (tab === 'log' ? ' active' : '');
-  document.getElementById('tab-history').className = 'tab' + (tab === 'history' ? ' active' : '');
+  document.getElementById('view-stats').style.display = tab === 'stats' ? 'block' : 'none';
+  ['log','history','stats'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (el) el.className = 'tab' + (t === tab ? ' active' : '');
+  });
   if (tab === 'history') renderHistory();
+  if (tab === 'stats') renderStats();
 }
 
-function renderExercises() {
-  const c = document.getElementById('exercises-container');
+function renderExercisesInto(containerId, exArr, updateFn, removeFn) {
+  const c = document.getElementById(containerId);
   c.innerHTML = '';
-  exercises.forEach((ex, idx) => {
+  exArr.forEach((ex, idx) => {
     const div = document.createElement('div');
     div.className = 'exercise-row';
     div.innerHTML = `
       <div class="ex-top">
         <div>
           <label>Øvelse</label>
-          <select onchange="updateEx(${idx},'name',this.value)">
+          <select onchange="${updateFn}(${idx},'name',this.value)">
             <option value="">Velg øvelse</option>
             ${EXERCISES.map(e => `<option value="${e}" ${ex.name===e?'selected':''}>${e}</option>`).join('')}
           </select>
         </div>
-        ${exercises.length > 1 ? `<button class="remove-btn" onclick="removeEx(${idx})">×</button>` : ''}
+        ${exArr.length > 1 ? `<button class="remove-btn" onclick="${removeFn}(${idx})">×</button>` : ''}
       </div>
       <div class="grid-4">
-        <div><label>Sett</label><input type="text" placeholder="—" value="${ex.sets}" oninput="updateEx(${idx},'sets',this.value)"></div>
-        <div><label>Reps</label><input type="text" placeholder="—" value="${ex.reps}" oninput="updateEx(${idx},'reps',this.value)"></div>
-        <div><label>Kg</label><input type="number" placeholder="—" value="${ex.weight}" oninput="updateEx(${idx},'weight',this.value)"></div>
-        <div><label>%/RPE</label><input type="text" placeholder="—" value="${ex.intensity}" oninput="updateEx(${idx},'intensity',this.value)"></div>
+        <div><label>Sett</label><input type="text" placeholder="—" value="${ex.sets||''}" oninput="${updateFn}(${idx},'sets',this.value)"></div>
+        <div><label>Reps</label><input type="text" placeholder="—" value="${ex.reps||''}" oninput="${updateFn}(${idx},'reps',this.value)"></div>
+        <div><label>Kg</label><input type="number" placeholder="—" value="${ex.weight||''}" oninput="${updateFn}(${idx},'weight',this.value)"></div>
+        <div><label>%/RPE</label><input type="text" placeholder="—" value="${ex.intensity||''}" oninput="${updateFn}(${idx},'intensity',this.value)"></div>
       </div>
-      <div class="ex-pain-row">
-        <div>
-          <label>Smerte (0–10)</label>
-          <input type="number" min="0" max="10" placeholder="0" value="${ex.pain}" oninput="updateEx(${idx},'pain',this.value)">
-        </div>
-        <div>
-          <label>Kommentar</label>
-          <input type="text" placeholder="f.eks. klikking, ubehag..." value="${ex.comment}" oninput="updateEx(${idx},'comment',this.value)">
-        </div>
+      <div style="display:grid;grid-template-columns:80px 80px 1fr;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div><label>Knevinkel°</label><input type="number" min="0" max="180" placeholder="—" value="${ex.angle||''}" oninput="${updateFn}(${idx},'angle',this.value)"></div>
+        <div><label>Smerte</label><input type="number" min="0" max="10" placeholder="0" value="${ex.pain||''}" oninput="${updateFn}(${idx},'pain',this.value)"></div>
+        <div><label>Kommentar</label><input type="text" placeholder="f.eks. klikking..." value="${ex.comment||''}" oninput="${updateFn}(${idx},'comment',this.value)"></div>
       </div>
     `;
     c.appendChild(div);
   });
 }
+
+function renderExercises() {
+  renderExercisesInto('exercises-container', exercises, 'updateEx', 'removeEx');
+}
+
+// ── EDIT ──────────────────────────────────────────────────────
+let editId = null;
+let editExercises = [];
+
+function openEdit(id) {
+  const e = entries.find(e => e.id === id);
+  if (!e) return;
+  editId = id;
+  editExercises = e.exercises.map(x => ({...x}));
+  document.getElementById('e-date').value = e.date;
+  document.getElementById('e-pain-during').value = e.painDuring || '';
+  document.getElementById('e-pain-24').value = e.pain24h || '';
+  document.getElementById('e-pain-48').value = e.pain48h || '';
+  document.getElementById('e-notes').value = e.notes || '';
+  renderEditExercises();
+  document.getElementById('edit-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEdit() {
+  document.getElementById('edit-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function closeEditIfBg(evt) {
+  if (evt.target === document.getElementById('edit-modal')) closeEdit();
+}
+
+function renderEditExercises() {
+  renderExercisesInto('edit-exercises-container', editExercises, 'updateEditEx', 'removeEditEx');
+}
+
+function updateEditEx(idx, field, val) { editExercises[idx][field] = val; }
+
+function editAddExercise() {
+  editExercises.push(newEx());
+  renderEditExercises();
+}
+
+function removeEditEx(idx) {
+  editExercises.splice(idx, 1);
+  renderEditExercises();
+}
+
+function saveEdit() {
+  const idx = entries.findIndex(e => e.id === editId);
+  if (idx === -1) return;
+  entries[idx] = {
+    ...entries[idx],
+    date: document.getElementById('e-date').value,
+    exercises: editExercises.map(x => ({...x})),
+    painDuring: document.getElementById('e-pain-during').value,
+    pain24h: document.getElementById('e-pain-24').value,
+    pain48h: document.getElementById('e-pain-48').value,
+    notes: document.getElementById('e-notes').value,
+  };
+  closeEdit();
+  save();
+}
+
 
 function updateEx(idx, field, val) { exercises[idx][field] = val; }
 
@@ -558,9 +972,11 @@ function renderHistory() {
       const validEx = e.exercises.filter(x => x.name);
       if (validEx.length) {
         const hasPainOrComment = validEx.some(x => x.pain !== '' || x.comment);
+        const hasAngle = validEx.some(x => x.angle);
         html += `<div class="section-label">Øvelser</div>
           <table><thead><tr>
             <th>Øvelse</th><th>Sett</th><th>Reps</th><th>Kg</th><th>%/RPE</th>
+            ${hasAngle ? '<th>Vinkel°</th>' : ''}
             ${hasPainOrComment ? '<th>Smerte</th><th>Kommentar</th>' : ''}
           </tr></thead><tbody>`;
         validEx.forEach(x => {
@@ -570,6 +986,7 @@ function renderHistory() {
             <td>${x.reps||'—'}</td>
             <td>${x.weight||'—'}</td>
             <td>${x.intensity||'—'}</td>
+            ${hasAngle ? `<td>${x.angle ? x.angle+'°' : '—'}</td>` : ''}
             ${hasPainOrComment ? `<td>${painHTML(x.pain)}</td><td class="td-comment">${x.comment||'—'}</td>` : ''}
           </tr>`;
         });
@@ -580,7 +997,10 @@ function renderHistory() {
         html += `<div class="section-label">Notater</div><div class="notes-text">${e.notes}</div>`;
       }
 
-      html += `<button class="del-btn" onclick="deleteEntry(${e.id})">Slett økt</button>`;
+      html += `<div style="margin-top:14px">
+        <button class="edit-btn" onclick="openEdit(${e.id})">✏️ Rediger</button>
+        <button class="del-btn" onclick="deleteEntry(${e.id})">Slett økt</button>
+      </div>`;
       html += `</div>`;
     }
     html += `</div>`;
