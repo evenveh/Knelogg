@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0d0d1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Knelogg">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Knelogg</title>
+
+  <!-- PWA Manifest inline -->
+  <script>
+    const manifestData = {
+      name: "Knelogg – Treningslogg",
+      short_name: "Knelogg",
+      description: "Patellofemoral testfase treningslogg",
+      start_url: ".",
+      display: "standalone",
+      background_color: "#0d0d1a",
+      theme_color: "#0d0d1a",
+      orientation: "portrait",
+      icons: [
+        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230d0d1a'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='100' font-family='sans-serif'%3E🦵%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml" },
+        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230d0d1a'/%3E%3Ctext x='256' y='360' text-anchor='middle' font-size='280' font-family='sans-serif'%3E🦵%3C/text%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml" }
+      ]
+    };
+    const blob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blob);
+    document.write('<link rel="manifest" href="' + manifestURL + '">');
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0d0d1a;
+      color: #e0e0ff;
+      font-family: 'Space Mono', monospace;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding-bottom: 90px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 2px; }
+
+    input, select, textarea {
+      font-family: 'Space Mono', monospace;
+      background: #1a1a2e;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      color: #e0e0ff;
+      padding: 10px 12px;
+      font-size: 15px;
+      width: 100%;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: #6060cc; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888cc' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    label { color: #8888cc; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 5px; }
+    button { font-family: 'Space Mono', monospace; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+    .header {
+      background: linear-gradient(135deg, #12122a 0%, #1a1a3e 100%);
+      border-bottom: 1px solid #2a2a4a;
+      padding: 16px 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 3px; color: #a0a0ff; line-height: 1; }
+    .subtitle { color: #555588; font-size: 10px; letter-spacing: 1px; margin-bottom: 14px; margin-top: 2px; }
+
+    .tabs { display: flex; }
+    .tab {
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      color: #555588; font-size: 11px; letter-spacing: 1.5px;
+      padding: 8px 14px 10px; font-weight: 700; font-family: 'Space Mono', monospace;
+      transition: all 0.15s;
+    }
+    .tab.active { border-bottom-color: #6060cc; color: #c0c0ff; }
+
+    .content { padding: 16px; max-width: 640px; margin: 0 auto; }
+
+    .card {
+      background: #12122a;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .card-title { font-size: 11px; color: #8888cc; letter-spacing: 1px; font-weight: 700; margin-bottom: 14px; text-transform: uppercase; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
+
+    .exercise-row { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid #1e1e3a; }
+    .exercise-row:last-of-type { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+    .ex-header { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 8px; }
+    .ex-header > div { flex: 1; }
+    .remove-btn {
+      background: none; border: none;
+      color: #444466; font-size: 22px; line-height: 1;
+      padding: 0 4px 2px;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+    .remove-btn:hover { color: #f87171; }
+
+    .add-ex-btn {
+      background: #1e1e3a; border: 1px dashed #3a3a5a;
+      border-radius: 8px; color: #8888cc; font-size: 12px;
+      letter-spacing: 1px; padding: 10px; width: 100%; margin-top: 8px;
+      transition: background 0.15s;
+    }
+    .add-ex-btn:hover { background: #2a2a4a; }
+
+    .save-btn {
+      background: #4040aa; border: none; border-radius: 10px;
+      color: #fff; font-size: 13px; font-weight: 700;
+      letter-spacing: 2px; padding: 16px; width: 100%;
+      transition: background 0.15s; margin-top: 4px;
+    }
+    .save-btn:hover, .save-btn:active { background: #5050cc; }
+
+    .entry-card {
+      background: #12122a; border: 1px solid #2a2a4a;
+      border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+    }
+    .entry-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 16px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .entry-header:hover, .entry-header:active { background: #16162a; }
+    .entry-date { font-size: 15px; font-weight: 700; color: #c0c0ff; }
+    .entry-exnames { font-size: 11px; color: #555588; margin-top: 3px; }
+    .entry-right { display: flex; gap: 14px; align-items: center; }
+    .pain-label { font-size: 10px; color: #555588; margin-bottom: 3px; text-align: right; }
+
+    .entry-body { border-top: 1px solid #1e1e3a; padding: 14px 16px; }
+
+    .pain-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    .pain-item .val { font-size: 15px; font-weight: 700; }
+    .pain-item label { margin-bottom: 4px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; color: #555588; font-weight: 400; padding: 0 8px 6px 0; border-bottom: 1px solid #1e1e3a; }
+    td { padding: 5px 8px 5px 0; color: #c0c0ff; border-bottom: 1px solid #16162a; }
+
+    .notes-text { color: #9090bb; font-size: 13px; line-height: 1.7; margin-top: 4px; }
+
+    .del-btn {
+      background: none; border: 1px solid #2a2a4a; border-radius: 6px;
+      color: #444466; font-size: 11px; letter-spacing: 1px;
+      padding: 7px 14px; margin-top: 14px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .del-btn:hover { color: #f87171; border-color: #4a1a1a; }
+
+    .pending-box {
+      background: #1a1020; border: 1px solid #4a2a6a;
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;
+    }
+    .pending-title { color: #cc88ff; font-size: 11px; letter-spacing: 1px; font-weight: 700; margin-bottom: 12px; }
+    .pending-card { border: 1px solid #2a2a4a; border-radius: 8px; background: #12122a; padding: 12px; margin-bottom: 8px; }
+    .pending-card:last-child { margin-bottom: 0; }
+    .pending-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .pending-fields { display: flex; gap: 10px; }
+    .pending-field input { width: 80px; }
+
+    .empty-state { text-align: center; color: #444466; padding: 60px 0; font-size: 13px; line-height: 2; }
+    .empty-link { color: #6060aa; cursor: pointer; text-decoration: underline; }
+
+    .pain-green { color: #4ade80; }
+    .pain-yellow { color: #facc15; }
+    .pain-red { color: #f87171; }
+    .pain-none { color: #555; }
+
+    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+
+    .chevron { color: #444466; font-size: 12px; margin-left: 4px; }
+
+    /* Install prompt */
+    .install-banner {
+      background: #1a1a3e; border: 1px solid #3a3a6a;
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    }
+    .install-text { font-size: 12px; color: #a0a0cc; line-height: 1.5; }
+    .install-btn {
+      background: #4040aa; border: none; border-radius: 7px;
+      color: #fff; font-size: 11px; font-family: 'Space Mono', monospace;
+      letter-spacing: 1px; padding: 8px 14px; white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .dismiss-btn { background: none; border: none; color: #555588; font-size: 18px; padding: 0 4px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">KNELOGG</div>
+  <div class="subtitle">PATELLOFEMORAL TESTFASE · 3–4 UKER</div>
+  <div class="tabs">
+    <button class="tab active" id="tab-log" onclick="switchTab('log')">NY ØKT</button>
+    <button class="tab" id="tab-history" onclick="switchTab('history')">LOGG (<span id="count">0</span>)</button>
+  </div>
+</div>
+
+<div class="content">
+  <!-- Install banner -->
+  <div class="install-banner" id="install-banner" style="display:none">
+    <div class="install-text">📲 Legg til på hjemskjermen for rask tilgang som en ekte app</div>
+    <button class="install-btn" onclick="installApp()">INSTALLER</button>
+    <button class="dismiss-btn" onclick="document.getElementById('install-banner').style.display='none'">×</button>
+  </div>
+
+  <!-- LOG VIEW -->
+  <div id="view-log">
+    <div id="pending-container"></div>
+
+    <div class="grid-2" style="margin-bottom:14px">
+      <div>
+        <label>Dato</label>
+        <input type="date" id="f-date">
+      </div>
+      <div>
+        <label>Maks knevinkel (°)</label>
+        <input type="number" id="f-angle" placeholder="f.eks. 30" min="0" max="180">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Øvelser</div>
+      <div id="exercises-container"></div>
+      <button class="add-ex-btn" onclick="addExercise()">+ LEGG TIL ØVELSE</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Smerteregistrering (0–10)</div>
+      <div class="grid-3">
+        <div><label>Under økt</label><input type="number" id="f-pain-during" min="0" max="10" placeholder="0"></div>
+        <div><label>Etter 24t</label><input type="number" id="f-pain-24" min="0" max="10" placeholder="0"></div>
+        <div><label>Etter 48t</label><input type="number" id="f-pain-48" min="0" max="10" placeholder="0"></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <label>Notater / observasjoner</label>
+      <textarea id="f-notes" rows="3" placeholder="Klikking i kne? Markløft vs sumo? Generell følelse..."></textarea>
+    </div>
+
+    <button class="save-btn" onclick="saveEntry()">LAGRE ØKT</button>
+  </div>
+
+  <!-- HISTORY VIEW -->
+  <div id="view-history" style="display:none">
+    <div id="history-container"></div>
+  </div>
+</div>
+
+<script>
+const EXERCISES = [
+  "Konvensjonell markløft","RDL","Hip thrust","Good morning",
+  "Knebøy (30° boks)","Spanish squat isometrisk","Mini-squat (0–30°)","Annet"
+];
+
+let exercises = [{ name: "", sets: "", reps: "", weight: "", intensity: "" }];
+let entries = [];
+let expandedId = null;
+let deferredPrompt = null;
+
+// PWA install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-banner').style.display = 'flex';
+});
+
+async function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('install-banner').style.display = 'none';
+}
+
+// Service Worker for offline
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'knelogg-v1';
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['.'])));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    });
+  `;
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  const swURL = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swURL).catch(() => {});
+}
+
+function load() {
+  try { entries = JSON.parse(localStorage.getItem('knelogg-entries') || '[]'); } catch { entries = []; }
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  renderExercises();
+  updateCount();
+  renderPending();
+}
+
+function save() {
+  localStorage.setItem('knelogg-entries', JSON.stringify(entries));
+  updateCount();
+  renderHistory();
+  renderPending();
+}
+
+function updateCount() {
+  document.getElementById('count').textContent = entries.length;
+}
+
+function switchTab(tab) {
+  document.getElementById('view-log').style.display = tab === 'log' ? 'block' : 'none';
+  document.getElementById('view-history').style.display = tab === 'history' ? 'block' : 'none';
+  document.getElementById('tab-log').className = 'tab' + (tab === 'log' ? ' active' : '');
+  document.getElementById('tab-history').className = 'tab' + (tab === 'history' ? ' active' : '');
+  if (tab === 'history') renderHistory();
+}
+
+function renderExercises() {
+  const c = document.getElementById('exercises-container');
+  c.innerHTML = '';
+  exercises.forEach((ex, idx) => {
+    const div = document.createElement('div');
+    div.className = 'exercise-row';
+    div.innerHTML = `
+      <div class="ex-header">
+        <div>
+          <label>Øvelse</label>
+          <select onchange="updateEx(${idx},'name',this.value)">
+            <option value="">Velg øvelse</option>
+            ${EXERCISES.map(e => `<option value="${e}" ${ex.name===e?'selected':''}>${e}</option>`).join('')}
+          </select>
+        </div>
+        ${exercises.length > 1 ? `<button class="remove-btn" onclick="removeEx(${idx})">×</button>` : ''}
+      </div>
+      <div class="grid-4">
+        <div><label>Sett</label><input type="text" placeholder="—" value="${ex.sets}" oninput="updateEx(${idx},'sets',this.value)"></div>
+        <div><label>Reps</label><input type="text" placeholder="—" value="${ex.reps}" oninput="updateEx(${idx},'reps',this.value)"></div>
+        <div><label>Kg</label><input type="number" placeholder="—" value="${ex.weight}" oninput="updateEx(${idx},'weight',this.value)"></div>
+        <div><label>%/RPE</label><input type="text" placeholder="—" value="${ex.intensity}" oninput="updateEx(${idx},'intensity',this.value)"></div>
+      </div>
+    `;
+    c.appendChild(div);
+  });
+}
+
+function updateEx(idx, field, val) {
+  exercises[idx][field] = val;
+}
+
+function addExercise() {
+  exercises.push({ name: "", sets: "", reps: "", weight: "", intensity: "" });
+  renderExercises();
+}
+
+function removeEx(idx) {
+  exercises.splice(idx, 1);
+  renderExercises();
+}
+
+function saveEntry() {
+  const entry = {
+    id: Date.now(),
+    date: document.getElementById('f-date').value,
+    exercises: exercises.map(e => ({ ...e })),
+    maxAngle: document.getElementById('f-angle').value,
+    painDuring: document.getElementById('f-pain-during').value,
+    pain24h: document.getElementById('f-pain-24').value,
+    pain48h: document.getElementById('f-pain-48').value,
+    notes: document.getElementById('f-notes').value,
+  };
+  if (!entry.date) { alert('Velg dato'); return; }
+  entries.unshift(entry);
+  save();
+
+  // Reset
+  exercises = [{ name: "", sets: "", reps: "", weight: "", intensity: "" }];
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('f-angle').value = '';
+  document.getElementById('f-pain-during').value = '';
+  document.getElementById('f-pain-24').value = '';
+  document.getElementById('f-pain-48').value = '';
+  document.getElementById('f-notes').value = '';
+  renderExercises();
+  switchTab('history');
+}
+
+function painColor(v) {
+  if (v === '' || v === null || v === undefined) return 'pain-none';
+  const n = Number(v);
+  if (n <= 2) return 'pain-green';
+  if (n <= 5) return 'pain-yellow';
+  return 'pain-red';
+}
+
+function painHTML(v) {
+  if (v === '' || v === null || v === undefined) return '<span class="pain-none">—</span>';
+  const cls = painColor(v);
+  const colors = { 'pain-green': '#4ade80', 'pain-yellow': '#facc15', 'pain-red': '#f87171', 'pain-none': '#555' };
+  return `<span class="${cls}" style="font-weight:700"><span class="dot" style="background:${colors[cls]}"></span>${v}/10</span>`;
+}
+
+function renderPending() {
+  const now = Date.now();
+  const pending = entries.filter(e => {
+    const h = (now - new Date(e.date).getTime()) / 3600000;
+    return h >= 24 && h <= 120 && (e.pain48h === '' || e.pain24h === '');
+  });
+  const c = document.getElementById('pending-container');
+  if (!pending.length) { c.innerHTML = ''; return; }
+  let html = `<div class="pending-box"><div class="pending-title">⏰ REGISTRER SMERTERESPONS</div>`;
+  pending.forEach(e => {
+    const h = Math.round((now - new Date(e.date).getTime()) / 3600000);
+    html += `<div class="pending-card"><div class="pending-inner">
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#c0c0ff">${e.date}</div>
+        <div style="font-size:11px;color:#666688">${h}t siden</div>
+      </div>
+      <div class="pending-fields">
+        ${h >= 24 && (e.pain24h === '') ? `<div class="pending-field"><label>24t smerte</label><input type="number" min="0" max="10" placeholder="0–10" onchange="updatePain24('${e.id}',this.value)"></div>` : ''}
+        ${h >= 48 ? `<div class="pending-field"><label>48t smerte</label><input type="number" min="0" max="10" placeholder="0–10" onchange="updatePain48('${e.id}',this.value)"></div>` : ''}
+      </div>
+    </div></div>`;
+  });
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+function updatePain24(id, val) {
+  const e = entries.find(e => e.id == id);
+  if (e) { e.pain24h = val; save(); }
+}
+
+function updatePain48(id, val) {
+  const e = entries.find(e => e.id == id);
+  if (e) { e.pain48h = val; save(); }
+}
+
+function toggleEntry(id) {
+  expandedId = expandedId === id ? null : id;
+  renderHistory();
+}
+
+function deleteEntry(id) {
+  if (!confirm('Slette denne økten?')) return;
+  entries = entries.filter(e => e.id !== id);
+  if (expandedId === id) expandedId = null;
+  save();
+}
+
+function renderHistory() {
+  const c = document.getElementById('history-container');
+  if (!entries.length) {
+    c.innerHTML = `<div class="empty-state">Ingen økter registrert ennå.<br><span class="empty-link" onclick="switchTab('log')">Registrer din første økt →</span></div>`;
+    return;
+  }
+  let html = '';
+  entries.forEach(e => {
+    const exNames = e.exercises.filter(x => x.name).map(x => x.name).join(' · ');
+    const isOpen = expandedId === e.id;
+    html += `<div class="entry-card">
+      <div class="entry-header" onclick="toggleEntry(${e.id})">
+        <div>
+          <div class="entry-date">${e.date}</div>
+          <div class="entry-exnames">${exNames || '—'}</div>
+        </div>
+        <div class="entry-right">
+          <div>
+            <div class="pain-label">48t</div>
+            ${painHTML(e.pain48h)}
+          </div>
+          <span class="chevron">${isOpen ? '▲' : '▼'}</span>
+        </div>
+      </div>`;
+
+    if (isOpen) {
+      html += `<div class="entry-body">
+        <div class="pain-grid">
+          <div class="pain-item"><label>Knevinkel</label><div class="val" style="color:#a0a0ff">${e.maxAngle ? e.maxAngle + '°' : '—'}</div></div>
+          <div class="pain-item"><label>Under</label><div class="val">${painHTML(e.painDuring)}</div></div>
+          <div class="pain-item"><label>24t</label><div class="val">${painHTML(e.pain24h)}</div></div>
+          <div class="pain-item"><label>48t</label><div class="val">${painHTML(e.pain48h)}</div></div>
+        </div>`;
+
+      const validEx = e.exercises.filter(x => x.name);
+      if (validEx.length) {
+        html += `<label style="margin-bottom:8px">Øvelser</label>
+          <table><thead><tr><th>Øvelse</th><th>Sett</th><th>Reps</th><th>Kg</th><th>%/RPE</th></tr></thead><tbody>`;
+        validEx.forEach(x => {
+          html += `<tr><td>${x.name}</td><td>${x.sets||'—'}</td><td>${x.reps||'—'}</td><td>${x.weight||'—'}</td><td>${x.intensity||'—'}</td></tr>`;
+        });
+        html += `</tbody></table>`;
+      }
+
+      if (e.notes) {
+        html += `<label style="margin-top:12px;margin-bottom:4px">Notater</label><div class="notes-text">${e.notes}</div>`;
+      }
+
+      html += `<button class="del-btn" onclick="deleteEntry(${e.id})">SLETT ØKT</button>`;
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  });
+  c.innerHTML = html;
+}
+
+load();
+</script>
+</body>
+</html>
