@@ -9,327 +9,166 @@
   <meta name="apple-mobile-web-app-title" content="Knelogg">
   <meta name="mobile-web-app-capable" content="yes">
   <title>Knelogg</title>
-
   <script>
-    const manifestData = {
-      name: "Knelogg – Treningslogg",
-      short_name: "Knelogg",
-      description: "Patellofemoral testfase treningslogg",
-      start_url: ".",
-      display: "standalone",
-      background_color: "#f5f5f0",
-      theme_color: "#f5f5f0",
-      orientation: "portrait",
-      icons: [
-        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23f5f5f0'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='100' font-family='sans-serif'%3E🦵%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml" },
-        { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23f5f5f0'/%3E%3Ctext x='256' y='360' text-anchor='middle' font-size='280' font-family='sans-serif'%3E🦵%3C/text%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml" }
-      ]
-    };
-    const blob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
-    document.write('<link rel="manifest" href="' + URL.createObjectURL(blob) + '">');
+    const md = {name:"Knelogg – Treningslogg",short_name:"Knelogg",start_url:".",display:"standalone",background_color:"#f5f5f0",theme_color:"#f5f5f0",orientation:"portrait",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23f5f5f0'/%3E%3Ctext x='96' y='130' text-anchor='middle' font-size='100' font-family='sans-serif'%3E🦵%3C/text%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml"}]};
+    document.write('<link rel="manifest" href="'+URL.createObjectURL(new Blob([JSON.stringify(md)],{type:'application/json'}))+'">');
   </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
   <style>
     :root {
-      --bg: #f5f5f0;
-      --surface: #ffffff;
-      --surface2: #f0f0eb;
-      --border: #e2e2dc;
-      --border2: #d0d0c8;
-      --text: #1a1a18;
-      --text2: #5a5a54;
-      --text3: #9a9a92;
-      --accent: #3d6b4f;
-      --accent-light: #e8f2ec;
-      --accent2: #5a8a6e;
-      --red: #c0392b;
-      --yellow: #d4890a;
-      --green: #2d7a4f;
-      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --bg:#f5f5f0; --surface:#fff; --surface2:#f0f0eb; --border:#e2e2dc; --border2:#d0d0c8;
+      --text:#1a1a18; --text2:#5a5a54; --text3:#9a9a92;
+      --accent:#3d6b4f; --accent-light:#e8f2ec; --accent2:#5a8a6e;
+      --red:#c0392b; --yellow:#d4890a; --green:#2d7a4f;
+      --purple:#7b6cf0;
+      --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      min-height: 100dvh;
-      padding-bottom: 90px;
-      -webkit-tap-highlight-color: transparent;
-      font-size: 15px;
-    }
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100dvh;padding-bottom:90px;-webkit-tap-highlight-color:transparent;font-size:15px}
+    ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+    input,select,textarea{font-family:'DM Sans',sans-serif;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;color:var(--text);padding:10px 13px;font-size:15px;width:100%;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .15s,box-shadow .15s}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(61,107,79,.12)}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a92' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
+    label{color:var(--text3);font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;display:block;margin-bottom:5px;font-family:'DM Mono',monospace}
+    button{font-family:'DM Sans',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
-    input, select, textarea {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      padding: 10px 13px;
-      font-size: 15px;
-      width: 100%;
-      outline: none;
-      -webkit-appearance: none;
-      appearance: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(61,107,79,0.12);
-    }
-    select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a92' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 13px center;
-      padding-right: 36px;
-    }
-    label {
-      color: var(--text3);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 5px;
-      font-family: 'DM Mono', monospace;
-    }
-    button { font-family: 'DM Sans', sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    /* HEADER */
+    .header{background:var(--surface);border-bottom:1.5px solid var(--border);padding:18px 16px 0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+    .logo{font-size:22px;font-weight:700;color:var(--accent);letter-spacing:-.5px}
+    .subtitle{color:var(--text3);font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.5px;margin-bottom:14px;margin-top:2px}
+    .tabs{display:flex;gap:4px;overflow-x:auto}
+    .tab{background:none;border:none;border-bottom:2.5px solid transparent;color:var(--text3);font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;padding:8px 14px 11px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+    .tab.active{border-bottom-color:var(--accent);color:var(--accent)}
 
-    .header {
-      background: var(--surface);
-      border-bottom: 1.5px solid var(--border);
-      padding: 18px 16px 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow);
-    }
-    .logo { font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
-    .subtitle { color: var(--text3); font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: 0.5px; margin-bottom: 14px; margin-top: 2px; }
+    /* LAYOUT */
+    .content{padding:16px;max-width:640px;margin:0 auto}
+    .card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+    .card-title{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.6px;font-weight:500;margin-bottom:14px;text-transform:uppercase}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 
-    .tabs { display: flex; gap: 4px; }
-    .tab {
-      background: none; border: none;
-      border-bottom: 2.5px solid transparent;
-      color: var(--text3); font-size: 13px; font-weight: 600;
-      font-family: 'DM Sans', sans-serif;
-      padding: 8px 14px 11px;
-      transition: all 0.15s;
-    }
-    .tab.active { border-bottom-color: var(--accent); color: var(--accent); }
+    /* EXERCISE CARD */
+    .exercise-row{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .ex-header-row{display:flex;gap:8px;align-items:flex-end;padding:12px 12px 10px}
+    .ex-header-row > div:first-child{flex:1}
+    .remove-btn{background:none;border:none;color:var(--text3);font-size:22px;line-height:1;padding:0 4px 2px;flex-shrink:0}
+    .remove-btn:active{color:var(--red)}
 
-    .content { padding: 16px; max-width: 640px; margin: 0 auto; }
+    /* SET TABLE */
+    .sets-section{padding:0 12px 4px}
+    .sets-header{display:grid;grid-template-columns:28px 1fr 1fr 1fr 28px;gap:6px;align-items:center;padding:6px 0 4px;border-bottom:1px solid var(--border)}
+    .set-col-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;text-align:center}
+    .set-row{display:grid;grid-template-columns:28px 1fr 1fr 1fr 28px;gap:6px;align-items:center;padding:5px 0}
+    .set-num{font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);text-align:center;font-weight:600}
+    .set-row input{padding:7px 8px;font-size:14px;border-radius:8px;text-align:center}
+    .remove-set-btn{background:none;border:none;color:var(--border2);font-size:18px;line-height:1;text-align:center;padding:0}
+    .remove-set-btn:active{color:var(--red)}
+    .add-set-btn{background:none;border:1px dashed var(--border2);border-radius:8px;color:var(--text3);font-size:12px;font-weight:600;padding:7px;width:100%;margin:6px 0 10px;transition:all .15s}
+    .add-set-btn:active{border-color:var(--accent2);color:var(--accent)}
 
-    .card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: var(--shadow);
-    }
-    .card-title { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); letter-spacing: 0.6px; font-weight: 500; margin-bottom: 14px; text-transform: uppercase; }
+    /* EX SUMMARY ROW */
+    .ex-summary{display:flex;gap:10px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid var(--border);background:rgba(255,255,255,.5)}
+    .ex-chip{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 10px}
+    .ex-chip span{color:var(--text2);font-weight:600}
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
+    /* EX EXTRA FIELDS */
+    .ex-extra{display:grid;grid-template-columns:80px 80px 1fr;gap:8px;padding:10px 12px;border-top:1px solid var(--border)}
 
-    .exercise-row {
-      padding: 14px;
-      background: var(--surface2);
-      border-radius: 10px;
-      margin-bottom: 10px;
-      border: 1.5px solid var(--border);
-    }
-    .exercise-row:last-of-type { margin-bottom: 0; }
-    .ex-top { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 10px; }
-    .ex-top > div:first-child { flex: 1; }
-    .remove-btn {
-      background: none; border: none;
-      color: var(--text3); font-size: 20px; line-height: 1;
-      padding: 0 4px 2px; transition: color 0.15s; flex-shrink: 0;
-    }
-    .remove-btn:active { color: var(--red); }
+    /* BUTTONS */
+    .add-ex-btn{background:var(--accent-light);border:1.5px dashed var(--accent2);border-radius:10px;color:var(--accent);font-size:14px;font-weight:600;padding:11px;width:100%;margin-top:10px;transition:background .15s}
+    .add-ex-btn:active{background:#d8ece0}
+    .save-btn{background:var(--accent);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;padding:16px;width:100%;transition:background .15s;margin-top:4px;box-shadow:0 2px 8px rgba(61,107,79,.25)}
+    .save-btn:active{background:#2d5a3f}
+    .edit-btn{background:none;border:1.5px solid var(--border2);border-radius:8px;color:var(--accent);font-size:12px;font-weight:600;padding:7px 14px;margin-top:10px;margin-right:8px;transition:all .15s}
+    .edit-btn:active{background:var(--accent-light)}
+    .del-btn{background:none;border:1.5px solid var(--border2);border-radius:8px;color:var(--text3);font-size:12px;font-weight:600;padding:7px 14px;margin-top:10px;transition:all .15s}
+    .del-btn:active{color:var(--red);border-color:#e8b4ae;background:#fdf0ee}
 
-    .ex-pain-row {
-      display: grid;
-      grid-template-columns: 90px 1fr;
-      gap: 8px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-    }
+    /* HISTORY */
+    .entry-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow)}
+    .entry-header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer;transition:background .12s}
+    .entry-header:active{background:var(--surface2)}
+    .entry-date{font-size:16px;font-weight:700}
+    .entry-exnames{font-size:12px;color:var(--text3);margin-top:3px}
+    .entry-notes-preview{font-size:12px;color:var(--text2);margin-top:4px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
+    .entry-right{display:flex;gap:14px;align-items:center;flex-shrink:0}
+    .pain-label{font-size:10px;color:var(--text3);margin-bottom:3px;text-align:right;font-family:'DM Mono',monospace}
+    .chevron{color:var(--text3);font-size:11px}
+    .entry-body{border-top:1.5px solid var(--border);padding:14px 16px}
+    .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+    .pain-item label{margin-bottom:4px}
+    .pain-item .val{font-size:14px;font-weight:700}
+    .section-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;margin-top:14px}
+    .section-label:first-child{margin-top:0}
 
-    .add-ex-btn {
-      background: var(--accent-light);
-      border: 1.5px dashed var(--accent2);
-      border-radius: 10px;
-      color: var(--accent);
-      font-size: 14px;
-      font-weight: 600;
-      padding: 11px;
-      width: 100%;
-      margin-top: 10px;
-      transition: background 0.15s;
-    }
-    .add-ex-btn:active { background: #d8ece0; }
+    /* EX DETAIL in history */
+    .ex-detail{background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden}
+    .ex-detail-header{padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+    .ex-detail-name{font-weight:700;font-size:14px}
+    .ex-detail-chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 10px}
+    .ex-detail-chip{font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2px 9px}
+    .ex-detail-chip span{color:var(--text2);font-weight:600}
+    .sets-table{width:100%;border-collapse:collapse;font-size:12px;margin:0 12px 10px;width:calc(100% - 24px)}
+    .sets-table th{text-align:center;color:var(--text3);font-weight:500;padding:0 4px 5px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase}
+    .sets-table td{text-align:center;padding:5px 4px;border-bottom:1px solid var(--border);color:var(--text)}
+    .sets-table tr:last-child td{border-bottom:none}
+    .td-comment{color:var(--text2);font-size:12px;font-style:italic}
+    .notes-text{color:var(--text2);font-size:13px;line-height:1.7}
 
-    .save-btn {
-      background: var(--accent);
-      border: none; border-radius: 12px;
-      color: #fff; font-size: 15px; font-weight: 700;
-      padding: 16px; width: 100%;
-      transition: background 0.15s; margin-top: 4px;
-      box-shadow: 0 2px 8px rgba(61,107,79,0.25);
-    }
-    .save-btn:active { background: #2d5a3f; }
+    /* PENDING */
+    .pending-box{background:#fffbf0;border:1.5px solid #e8c96a;border-radius:14px;padding:14px 16px;margin-bottom:16px}
+    .pending-title{color:#a07010;font-size:12px;font-weight:700;margin-bottom:12px;font-family:'DM Mono',monospace;letter-spacing:.5px}
+    .pending-card{border:1.5px solid #f0dfa0;border-radius:10px;background:#fff;padding:12px;margin-bottom:8px}
+    .pending-card:last-child{margin-bottom:0}
+    .pending-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+    .pending-fields{display:flex;gap:10px}
+    .pending-field input{width:82px}
 
-    .entry-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      margin-bottom: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .entry-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 16px; cursor: pointer; transition: background 0.12s;
-    }
-    .entry-header:active { background: var(--surface2); }
-    .entry-date { font-size: 16px; font-weight: 700; }
-    .entry-exnames { font-size: 12px; color: var(--text3); margin-top: 3px; }
-    .entry-right { display: flex; gap: 14px; align-items: center; }
-    .pain-label { font-size: 10px; color: var(--text3); margin-bottom: 3px; text-align: right; font-family: 'DM Mono', monospace; }
-    .entry-notes-preview { font-size: 12px; color: var(--text2); margin-top: 4px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
-    .chevron { color: var(--text3); font-size: 11px; }
+    /* PAIN COLORS */
+    .pain-green{color:var(--green)} .pain-yellow{color:var(--yellow)} .pain-red{color:var(--red)} .pain-none{color:var(--text3)}
+    .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}
 
-    .entry-body { border-top: 1.5px solid var(--border); padding: 14px 16px; }
+    /* EMPTY */
+    .empty-state{text-align:center;color:var(--text3);padding:60px 0;font-size:14px;line-height:2.2}
+    .empty-link{color:var(--accent);cursor:pointer;text-decoration:underline;font-weight:600}
 
-    .pain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-    .pain-item label { margin-bottom: 4px; }
-    .pain-item .val { font-size: 14px; font-weight: 700; }
+    /* INSTALL */
+    .install-banner{background:var(--accent-light);border:1.5px solid #b8d8c4;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .install-text{font-size:13px;color:var(--accent);line-height:1.5;font-weight:500}
+    .install-btn{background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;font-family:'DM Sans',sans-serif;padding:8px 14px;white-space:nowrap;flex-shrink:0}
+    .dismiss-btn{background:none;border:none;color:var(--text3);font-size:20px;padding:0 4px;flex-shrink:0}
 
-    .section-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; margin-top: 14px; }
-    .section-label:first-child { margin-top: 0; }
+    /* MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;align-items:flex-end;animation:fadeIn .15s ease}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-height:92dvh;overflow-y:auto;padding:20px 16px 40px;animation:slideUp .2s ease}
+    @keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .modal-title{font-size:17px;font-weight:700}
+    .modal-close{background:var(--surface2);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center}
 
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th { text-align: left; color: var(--text3); font-weight: 500; padding: 0 6px 7px 0; border-bottom: 1.5px solid var(--border); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
-    td { padding: 7px 6px 7px 0; color: var(--text); border-bottom: 1px solid var(--border); vertical-align: top; }
-    tr:last-child td { border-bottom: none; }
-    .td-comment { color: var(--text2); font-size: 12px; font-style: italic; }
-
-    .notes-text { color: var(--text2); font-size: 13px; line-height: 1.7; }
-
-    .del-btn {
-      background: none; border: 1.5px solid var(--border2); border-radius: 8px;
-      color: var(--text3); font-size: 12px; font-weight: 600;
-      padding: 7px 14px; margin-top: 14px; transition: all 0.15s;
-    }
-    .del-btn:active { color: var(--red); border-color: #e8b4ae; background: #fdf0ee; }
-
-    .pending-box {
-      background: #fffbf0; border: 1.5px solid #e8c96a;
-      border-radius: 14px; padding: 14px 16px; margin-bottom: 16px;
-    }
-    .pending-title { color: #a07010; font-size: 12px; font-weight: 700; margin-bottom: 12px; font-family: 'DM Mono', monospace; letter-spacing: 0.5px; }
-    .pending-card { border: 1.5px solid #f0dfa0; border-radius: 10px; background: #fff; padding: 12px; margin-bottom: 8px; }
-    .pending-card:last-child { margin-bottom: 0; }
-    .pending-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .pending-fields { display: flex; gap: 10px; }
-    .pending-field input { width: 82px; }
-
-    .pain-green { color: var(--green); }
-    .pain-yellow { color: var(--yellow); }
-    .pain-red { color: var(--red); }
-    .pain-none { color: var(--text3); }
-    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-
-    .empty-state { text-align: center; color: var(--text3); padding: 60px 0; font-size: 14px; line-height: 2.2; }
-    .empty-link { color: var(--accent); cursor: pointer; text-decoration: underline; font-weight: 600; }
-
-    .install-banner {
-      background: var(--accent-light); border: 1.5px solid #b8d8c4;
-      border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;
-      display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    }
-    .install-text { font-size: 13px; color: var(--accent); line-height: 1.5; font-weight: 500; }
-    .install-btn {
-      background: var(--accent); border: none; border-radius: 8px;
-      color: #fff; font-size: 12px; font-weight: 700;
-      font-family: 'DM Sans', sans-serif; padding: 8px 14px; white-space: nowrap; flex-shrink: 0;
-    }
-    .dismiss-btn { background: none; border: none; color: var(--text3); font-size: 20px; padding: 0 4px; flex-shrink: 0; }
     /* STATS */
-    .stat-section { margin-bottom: 20px; }
-    .stat-section-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
-    .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-    .summary-tile {
-      background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: 12px; padding: 14px 12px; text-align: center;
-      box-shadow: var(--shadow);
-    }
-    .summary-tile .tile-val { font-size: 22px; font-weight: 700; color: var(--accent); line-height: 1.1; margin-bottom: 4px; }
-    .summary-tile .tile-lbl { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; }
-
-    .trend-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
-    .trend-title { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px; }
-    .chart-wrap { width: 100%; overflow-x: auto; }
-    canvas { display: block; }
-
-    .ex-filter { margin-bottom: 14px; }
-    .ex-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .pill {
-      background: var(--surface2); border: 1.5px solid var(--border2);
-      border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 600;
-      color: var(--text2); cursor: pointer; transition: all 0.15s;
-    }
-    .pill.active { background: var(--accent-light); border-color: var(--accent2); color: var(--accent); }
-
-    .ex-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .ex-stat-row:last-child { border-bottom: none; }
-    .ex-stat-name { color: var(--text); font-weight: 600; flex: 1; }
-    .ex-stat-vals { display: flex; gap: 14px; color: var(--text2); font-size: 12px; font-family: 'DM Mono', monospace; }
-    .ex-stat-best { color: var(--accent); font-weight: 700; }
-
-    .pain-trend-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .pain-trend-row:last-child { border-bottom: none; }
-    .pain-trend-date { color: var(--text3); font-family: 'DM Mono', monospace; font-size: 11px; width: 80px; flex-shrink: 0; }
-    .pain-bar-wrap { flex: 1; display: flex; gap: 4px; align-items: center; }
-    .pain-bar { height: 10px; border-radius: 5px; min-width: 3px; transition: width 0.3s; }
-    /* EDIT MODAL */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-      z-index: 200; display: flex; align-items: flex-end;
-      animation: fadeIn 0.15s ease;
-    }
-    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
-    .modal {
-      background: var(--surface); border-radius: 20px 20px 0 0;
-      width: 100%; max-height: 92dvh; overflow-y: auto;
-      padding: 20px 16px 40px;
-      animation: slideUp 0.2s ease;
-    }
-    @keyframes slideUp { from { transform:translateY(60px); opacity:0 } to { transform:translateY(0); opacity:1 } }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-    .modal-title { font-size: 17px; font-weight: 700; }
-    .modal-close {
-      background: var(--surface2); border: none; border-radius: 50%;
-      width: 32px; height: 32px; font-size: 18px; color: var(--text2);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .edit-btn {
-      background: none; border: 1.5px solid var(--border2); border-radius: 8px;
-      color: var(--accent); font-size: 12px; font-weight: 600;
-      padding: 7px 14px; margin-top: 10px; margin-right: 8px;
-      transition: all 0.15s;
-    }
-    .edit-btn:active { background: var(--accent-light); }
+    .summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+    .summary-tile{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:14px 12px;text-align:center;box-shadow:var(--shadow)}
+    .summary-tile .tile-val{font-size:22px;font-weight:700;color:var(--accent);line-height:1.1;margin-bottom:4px}
+    .summary-tile .tile-lbl{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);letter-spacing:.5px;text-transform:uppercase}
+    .trend-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+    .trend-title{font-size:12px;font-family:'DM Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+    .chart-wrap{width:100%;overflow-x:auto}
+    .ex-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .pill{background:var(--surface2);border:1.5px solid var(--border2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .15s}
+    .pill.active{background:var(--accent-light);border-color:var(--accent2);color:var(--accent)}
+    .ex-stat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+    .ex-stat-row:last-child{border-bottom:none}
+    .ex-stat-name{color:var(--text);font-weight:600;flex:1}
+    .ex-stat-vals{display:flex;gap:14px;color:var(--text2);font-size:12px;font-family:'DM Mono',monospace}
+    .ex-stat-best{color:var(--accent);font-weight:700}
+    .pain-trend-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+    .pain-trend-row:last-child{border-bottom:none}
+    .pain-trend-date{color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;width:76px;flex-shrink:0}
+    .pain-bar-wrap{flex:1;display:flex;gap:4px;align-items:center}
+    .pain-bar{height:10px;border-radius:5px;min-width:3px}
   </style>
 </head>
 <body>
@@ -354,18 +193,15 @@
   <!-- LOG VIEW -->
   <div id="view-log">
     <div id="pending-container"></div>
-
     <div style="margin-bottom:14px">
       <label>Dato</label>
       <input type="date" id="f-date">
     </div>
-
     <div class="card">
       <div class="card-title">Øvelser</div>
       <div id="exercises-container"></div>
       <button class="add-ex-btn" onclick="addExercise()">+ Legg til øvelse</button>
     </div>
-
     <div class="card">
       <div class="card-title">Samlet smerteregistrering (0–10)</div>
       <div class="grid-3">
@@ -374,12 +210,10 @@
         <div><label>Etter 48t</label><input type="number" id="f-pain-48" min="0" max="10" placeholder="0"></div>
       </div>
     </div>
-
     <div style="margin-bottom:16px">
       <label>Notater / observasjoner</label>
       <textarea id="f-notes" rows="3" placeholder="Klikking i kne? Markløft vs sumo? Generell følelse..."></textarea>
     </div>
-
     <button class="save-btn" onclick="saveEntry()">Lagre økt</button>
   </div>
 
@@ -401,8 +235,8 @@
       <div class="modal-title">Rediger økt</div>
       <button class="modal-close" onclick="closeEdit()">×</button>
     </div>
-    <div class="grid-2" style="margin-bottom:14px">
-      <div><label>Dato</label><input type="date" id="e-date"></div>
+    <div style="margin-bottom:14px">
+      <label>Dato</label><input type="date" id="e-date">
     </div>
     <div class="card" style="margin-bottom:14px">
       <div class="card-title">Øvelser</div>
@@ -419,440 +253,171 @@
     </div>
     <div style="margin-bottom:16px">
       <label>Notater</label>
-      <textarea id="e-notes" rows="3" placeholder="Notater..."></textarea>
+      <textarea id="e-notes" rows="3"></textarea>
     </div>
     <button class="save-btn" onclick="saveEdit()">Lagre endringer</button>
   </div>
 </div>
 
 <script>
-const EXERCISES = [
-  "Konvensjonell markløft","RDL","Hip thrust","Good morning",
-  "Knebøy (30° boks)","Spanish squat isometrisk","Mini-squat (0–30°)","Annet"
-];
+const EXERCISES = ["Konvensjonell markløft","RDL","Hip thrust","Good morning","Knebøy (30° boks)","Spanish squat isometrisk","Mini-squat (0–30°)","Annet"];
+
+// ── DATA MODEL ──────────────────────────────────────────────
+// exercise: { name, angle, pain, comment, sets: [{reps, weight, rpe}] }
+function newSet() { return {reps:'', weight:'', rpe:''}; }
+function newEx()  { return {name:'', angle:'', pain:'', comment:'', sets:[newSet()]}; }
 
 let exercises = [newEx()];
-let entries = [];
+let entries   = [];
 let expandedId = null;
+let editId = null;
+let editExercises = [];
+let statsExFilter = null;
 let deferredPrompt = null;
 
-function newEx() {
-  return { name: "", sets: "", reps: "", weight: "", intensity: "", angle: "", pain: "", comment: "" };
-}
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
+// ── PWA ──────────────────────────────────────────────────────
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
   document.getElementById('install-banner').style.display = 'flex';
 });
-
 async function installApp() {
   if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
+  deferredPrompt.prompt(); await deferredPrompt.userChoice;
   deferredPrompt = null;
   document.getElementById('install-banner').style.display = 'none';
 }
-
 if ('serviceWorker' in navigator) {
-  const swCode = `const C='knelogg-v2';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['.']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
-  navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'application/javascript' }))).catch(()=>{});
+  const sw = `const C='knelogg-v3';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['.']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});
 }
 
-// ── STATISTICS ────────────────────────────────────────────────
-let statsExFilter = null; // null = all
-
-function renderStats() {
-  const c = document.getElementById('stats-container');
-  const sorted = [...entries].sort((a,b) => a.date.localeCompare(b.date));
-
-  if (!sorted.length) {
-    c.innerHTML = `<div class="empty-state">Ingen data ennå.<br><span class="empty-link" onclick="switchTab('log')">Registrer din første økt →</span></div>`;
-    return;
-  }
-
-  // ── helpers ──
-  const pNum = v => (v !== '' && v !== null && v !== undefined && !isNaN(Number(v))) ? Number(v) : null;
-  const painCol = v => v <= 2 ? '#2d7a4f' : v <= 5 ? '#d4890a' : '#c0392b';
-
-  // ── summary tiles ──
-  const totalSessions = sorted.length;
-  const pain48vals = sorted.map(e => pNum(e.pain48h)).filter(v => v !== null);
-  const avgPain48 = pain48vals.length ? (pain48vals.reduce((a,b)=>a+b,0)/pain48vals.length).toFixed(1) : '—';
-  const trend48 = pain48vals.length >= 2
-    ? (pain48vals[pain48vals.length-1] - pain48vals[0] < 0 ? '↓ Bedre' : pain48vals[pain48vals.length-1] - pain48vals[0] > 0 ? '↑ Verre' : '→ Stabil')
-    : '—';
-  const trendColor = trend48 === '↓ Bedre' ? 'var(--green)' : trend48 === '↑ Verre' ? 'var(--red)' : 'var(--text3)';
-
-  // ── all exercises across all sessions ──
-  const allExNames = [...new Set(sorted.flatMap(e => e.exercises.filter(x=>x.name).map(x=>x.name)))];
-
-  // ── per-exercise best weight ──
-  const exStats = {};
-  allExNames.forEach(name => {
-    const instances = sorted.flatMap(e =>
-      e.exercises.filter(x => x.name === name).map(x => ({ ...x, date: e.date }))
-    );
-    const weights = instances.map(x => parseFloat(x.weight)).filter(w => !isNaN(w) && w > 0);
-    const painVals = instances.map(x => pNum(x.pain)).filter(v => v !== null);
-    exStats[name] = {
-      sessions: [...new Set(instances.map(x=>x.date))].length,
-      bestWeight: weights.length ? Math.max(...weights) : null,
-      latestWeight: (() => {
-        for (let i = instances.length-1; i >= 0; i--) {
-          const w = parseFloat(instances[i].weight);
-          if (!isNaN(w) && w > 0) return w;
-        }
-        return null;
-      })(),
-      avgPain: painVals.length ? (painVals.reduce((a,b)=>a+b,0)/painVals.length).toFixed(1) : null,
-      history: instances.map(x => ({ date: x.date, weight: parseFloat(x.weight)||null, pain: pNum(x.pain) }))
-    };
-  });
-
-  // ── filter pills ──
-  const activeFilter = statsExFilter && allExNames.includes(statsExFilter) ? statsExFilter : null;
-
-  let html = '';
-
-  // Summary
-  html += `<div class="summary-grid">
-    <div class="summary-tile"><div class="tile-val">${totalSessions}</div><div class="tile-lbl">Økter</div></div>
-    <div class="summary-tile"><div class="tile-val">${avgPain48}</div><div class="tile-lbl">Snitt 48t</div></div>
-    <div class="summary-tile"><div class="tile-val" style="color:${trendColor};font-size:16px">${trend48}</div><div class="tile-lbl">Trend</div></div>
-  </div>`;
-
-  // Pain over time chart
-  const painEntries = sorted.filter(e => pNum(e.pain48h) !== null || pNum(e.painDuring) !== null || pNum(e.pain24h) !== null);
-  if (painEntries.length >= 2) {
-    html += `<div class="trend-card">
-      <div class="trend-title">Smertetrend over tid</div>
-      <div class="chart-wrap"><canvas id="pain-chart" height="180"></canvas></div>
-    </div>`;
-  }
-
-  // Exercise filter pills
-  if (allExNames.length > 1) {
-    html += `<div class="trend-card">
-      <div class="trend-title">Øvelser – filter</div>
-      <div class="ex-pills">
-        <div class="pill ${!activeFilter ? 'active' : ''}" onclick="setExFilter(null)">Alle</div>
-        ${allExNames.map(n => `<div class="pill ${activeFilter===n?'active':''}" onclick="setExFilter('${n.replace(/'/g,"\\'")}')"> ${n}</div>`).join('')}
-      </div>
-    </div>`;
-  }
-
-  // Exercise performance table
-  const exToShow = activeFilter ? [activeFilter] : allExNames;
-  html += `<div class="trend-card">
-    <div class="trend-title">Beste løft per øvelse</div>`;
-  exToShow.forEach(name => {
-    const s = exStats[name];
-    html += `<div class="ex-stat-row">
-      <div class="ex-stat-name">${name}</div>
-      <div class="ex-stat-vals">
-        <span>${s.sessions} økt${s.sessions!==1?'er':''}</span>
-        ${s.bestWeight !== null ? `<span class="ex-stat-best">${s.bestWeight} kg</span>` : ''}
-        ${s.avgPain !== null ? `<span style="color:${painCol(Number(s.avgPain))}">${s.avgPain}/10</span>` : ''}
-      </div>
-    </div>`;
-  });
-  html += `</div>`;
-
-  // Weight trend for selected exercise (or most frequent)
-  const exForChart = activeFilter || allExNames.reduce((best, n) => exStats[n].sessions > (exStats[best]?.sessions||0) ? n : best, allExNames[0]);
-  const weightHistory = exStats[exForChart]?.history.filter(h => h.weight !== null && !isNaN(h.weight)) || [];
-  if (weightHistory.length >= 2) {
-    html += `<div class="trend-card">
-      <div class="trend-title">Vektutvikling – ${exForChart}</div>
-      <div class="chart-wrap"><canvas id="weight-chart" height="160"></canvas></div>
-    </div>`;
-  }
-
-  // Pain per session list (last 8)
-  html += `<div class="trend-card">
-    <div class="trend-title">Smerte per økt (nyeste først)</div>`;
-  const last8 = [...sorted].reverse().slice(0, 8);
-  last8.forEach(e => {
-    const p = pNum(e.pain48h);
-    const pd = pNum(e.painDuring);
-    const val = p !== null ? p : pd;
-    const maxVal = 10;
-    html += `<div class="pain-trend-row">
-      <div class="pain-trend-date">${e.date.slice(5)}</div>
-      <div class="pain-bar-wrap">
-        ${val !== null
-          ? `<div class="pain-bar" style="width:${Math.max(6, (val/maxVal)*100)}%;background:${painCol(val)}"></div>
-             <span style="font-size:12px;font-weight:700;color:${painCol(val)}">${val}/10 ${p !== null ? '(48t)' : '(under)'}</span>`
-          : `<span style="color:var(--text3);font-size:12px">Ikke registrert</span>`}
-      </div>
-    </div>`;
-  });
-  html += `</div>`;
-
-  c.innerHTML = html;
-
-  // Draw pain chart
-  if (painEntries.length >= 2) {
-    drawLineChart('pain-chart', painEntries.map(e => ({
-      label: e.date.slice(5),
-      v1: pNum(e.painDuring),
-      v2: pNum(e.pain24h),
-      v3: pNum(e.pain48h)
-    })), ['Smerte under', 'Smerte 24t', 'Smerte 48t'], ['#d4890a', '#7b6cf0', '#3d6b4f']);
-  }
-
-  // Draw weight chart
-  if (weightHistory.length >= 2) {
-    drawLineChart('weight-chart', weightHistory.map(h => ({
-      label: h.date.slice(5),
-      v1: h.weight,
-      v2: null
-    })), ['Kg'], ['#3d6b4f'], true);
-  }
-}
-
-function setExFilter(name) {
-  statsExFilter = name;
-  renderStats();
-}
-
-function drawLineChart(canvasId, data, seriesNames, colors, noNull = false) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const dpr = window.devicePixelRatio || 1;
-  const W = canvas.parentElement.offsetWidth || 300;
-  const H = parseInt(canvas.getAttribute('height')) || 160;
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  canvas.style.width = W + 'px';
-  canvas.style.height = H + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-
-  const pad = { top: 24, right: 12, bottom: 32, left: 32 };
-  const cw = W - pad.left - pad.right;
-  const ch = H - pad.top - pad.bottom;
-
-  const series = [
-    data.map(d => d.v1),
-    data.map(d => d.v2),
-    data.map(d => d.v3)
-  ].slice(0, seriesNames.length);
-
-  const allVals = series.flat().filter(v => v !== null && v !== undefined);
-  if (!allVals.length) return;
-  const minV = Math.min(...allVals);
-  const maxV = Math.max(...allVals);
-  const range = maxV - minV || 1;
-
-  const xPos = i => pad.left + (data.length > 1 ? (i / (data.length - 1)) * cw : cw / 2);
-  const yPos = v => pad.top + ch - ((v - minV) / range) * ch;
-
-  // grid lines
-  ctx.strokeStyle = '#e2e2dc';
-  ctx.lineWidth = 1;
-  [0, 0.25, 0.5, 0.75, 1].forEach(f => {
-    const y = pad.top + ch * (1 - f);
-    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
-    const val = (minV + range * f).toFixed(noNull ? 0 : 1);
-    ctx.fillStyle = '#9a9a92'; ctx.font = '9px DM Mono, monospace'; ctx.textAlign = 'right';
-    ctx.fillText(val, pad.left - 4, y + 3);
-  });
-
-  // x labels
-  ctx.fillStyle = '#9a9a92'; ctx.font = '9px DM Mono, monospace'; ctx.textAlign = 'center';
-  const step = Math.max(1, Math.floor(data.length / 6));
-  data.forEach((d, i) => {
-    if (i % step === 0 || i === data.length - 1) {
-      ctx.fillText(d.label, xPos(i), H - 6);
-    }
-  });
-
-  // draw each series
-  series.forEach((s, si) => {
-    const pts = s.map((v, i) => (v !== null && v !== undefined) ? { x: xPos(i), y: yPos(v), v } : null).filter(Boolean);
-    if (pts.length < 1) return;
-    ctx.strokeStyle = colors[si] || '#3d6b4f';
-    ctx.lineWidth = 2.5;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    if (pts.length >= 2) {
-      ctx.beginPath();
-      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-      ctx.stroke();
-    }
-    // dots
-    pts.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = colors[si] || '#3d6b4f';
-      ctx.fill();
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
-      ctx.stroke();
-    });
-  });
-
-  // legend
-  let lx = pad.left;
-  const legendY = pad.top - 10;
-  seriesNames.forEach((n, i) => {
-    ctx.fillStyle = colors[i];
-    ctx.fillRect(lx, legendY - 2, 14, 3);
-    ctx.fillStyle = '#5a5a54';
-    ctx.font = '10px DM Sans, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText(n, lx + 18, legendY + 2);
-    lx += ctx.measureText(n).width + 32;
-  });
-}
-
+// ── STORAGE ──────────────────────────────────────────────────
 function load() {
-  try { entries = JSON.parse(localStorage.getItem('knelogg-entries') || '[]'); } catch { entries = []; }
+  try { entries = JSON.parse(localStorage.getItem('knelogg-entries')||'[]'); } catch { entries=[]; }
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
-  renderExercises();
-  updateCount();
-  renderPending();
+  renderExercisesInto('exercises-container', exercises, 'updateEx', 'removeEx', 'addSetNew', 'removeSetNew');
+  updateCount(); renderPending();
 }
-
-function save() {
+function saveData() {
   localStorage.setItem('knelogg-entries', JSON.stringify(entries));
-  updateCount();
-  renderHistory();
-  renderPending();
+  updateCount(); renderHistory(); renderPending();
 }
+function updateCount() { document.getElementById('count').textContent = entries.length; }
 
-function updateCount() {
-  document.getElementById('count').textContent = entries.length;
-}
-
+// ── TABS ─────────────────────────────────────────────────────
 function switchTab(tab) {
-  document.getElementById('view-log').style.display = tab === 'log' ? 'block' : 'none';
-  document.getElementById('view-history').style.display = tab === 'history' ? 'block' : 'none';
-  document.getElementById('view-stats').style.display = tab === 'stats' ? 'block' : 'none';
   ['log','history','stats'].forEach(t => {
-    const el = document.getElementById('tab-' + t);
-    if (el) el.className = 'tab' + (t === tab ? ' active' : '');
+    document.getElementById('view-'+t).style.display = t===tab ? 'block':'none';
+    document.getElementById('tab-'+t).className = 'tab'+(t===tab?' active':'');
   });
-  if (tab === 'history') renderHistory();
-  if (tab === 'stats') renderStats();
+  if (tab==='history') renderHistory();
+  if (tab==='stats') renderStats();
 }
 
-function renderExercisesInto(containerId, exArr, updateFn, removeFn) {
+// ── EXERCISE RENDERER (shared for new + edit) ─────────────────
+function renderExercisesInto(containerId, exArr, updateFn, removeExFn, addSetFn, removeSetFn) {
   const c = document.getElementById(containerId);
   c.innerHTML = '';
-  exArr.forEach((ex, idx) => {
+  exArr.forEach((ex, ei) => {
+    const avgRpe  = calcAvg(ex.sets.map(s=>parseFloat(s.rpe)).filter(v=>!isNaN(v)&&v>0));
+    const avgPain = parseFloat(ex.pain)>-1 && ex.pain!=='' ? parseFloat(ex.pain) : null;
+
     const div = document.createElement('div');
     div.className = 'exercise-row';
-    div.innerHTML = `
-      <div class="ex-top">
-        <div>
-          <label>Øvelse</label>
-          <select onchange="${updateFn}(${idx},'name',this.value)">
-            <option value="">Velg øvelse</option>
-            ${EXERCISES.map(e => `<option value="${e}" ${ex.name===e?'selected':''}>${e}</option>`).join('')}
-          </select>
-        </div>
-        ${exArr.length > 1 ? `<button class="remove-btn" onclick="${removeFn}(${idx})">×</button>` : ''}
+
+    // Header row: name select + remove button
+    let html = `<div class="ex-header-row">
+      <div>
+        <label>Øvelse</label>
+        <select onchange="${updateFn}(${ei},'name',this.value)">
+          <option value="">Velg øvelse</option>
+          ${EXERCISES.map(e=>`<option value="${e}"${ex.name===e?' selected':''}>${e}</option>`).join('')}
+        </select>
       </div>
-      <div class="grid-4">
-        <div><label>Sett</label><input type="text" placeholder="—" value="${ex.sets||''}" oninput="${updateFn}(${idx},'sets',this.value)"></div>
-        <div><label>Reps</label><input type="text" placeholder="—" value="${ex.reps||''}" oninput="${updateFn}(${idx},'reps',this.value)"></div>
-        <div><label>Kg</label><input type="number" placeholder="—" value="${ex.weight||''}" oninput="${updateFn}(${idx},'weight',this.value)"></div>
-        <div><label>%/RPE</label><input type="text" placeholder="—" value="${ex.intensity||''}" oninput="${updateFn}(${idx},'intensity',this.value)"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:80px 80px 1fr;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-        <div><label>Knevinkel°</label><input type="number" min="0" max="180" placeholder="—" value="${ex.angle||''}" oninput="${updateFn}(${idx},'angle',this.value)"></div>
-        <div><label>Smerte</label><input type="number" min="0" max="10" placeholder="0" value="${ex.pain||''}" oninput="${updateFn}(${idx},'pain',this.value)"></div>
-        <div><label>Kommentar</label><input type="text" placeholder="f.eks. klikking..." value="${ex.comment||''}" oninput="${updateFn}(${idx},'comment',this.value)"></div>
-      </div>
-    `;
+      ${exArr.length>1?`<button class="remove-btn" onclick="${removeExFn}(${ei})">×</button>`:''}
+    </div>`;
+
+    // Sets header
+    html += `<div class="sets-section">
+      <div class="sets-header">
+        <div class="set-col-label">#</div>
+        <div class="set-col-label">Reps</div>
+        <div class="set-col-label">Kg</div>
+        <div class="set-col-label">RPE</div>
+        <div></div>
+      </div>`;
+
+    // Set rows
+    ex.sets.forEach((s, si) => {
+      html += `<div class="set-row">
+        <div class="set-num">${si+1}</div>
+        <input type="number" min="0" placeholder="—" value="${s.reps||''}" oninput="${updateFn}(${ei},'set-reps-${si}',this.value)">
+        <input type="number" min="0" step="0.5" placeholder="—" value="${s.weight||''}" oninput="${updateFn}(${ei},'set-weight-${si}',this.value)">
+        <input type="number" min="1" max="10" step="0.5" placeholder="—" value="${s.rpe||''}" oninput="${updateFn}(${ei},'set-rpe-${si}',this.value)">
+        <button class="remove-set-btn" onclick="${removeSetFn}(${ei},${si})">×</button>
+      </div>`;
+    });
+
+    html += `<button class="add-set-btn" onclick="${addSetFn}(${ei})">+ Sett</button>
+    </div>`;
+
+    // Summary chips
+    html += `<div class="ex-summary">`;
+    if (ex.sets.length > 0) html += `<div class="ex-chip"><span>${ex.sets.length}</span> sett</div>`;
+    const maxW = Math.max(...ex.sets.map(s=>parseFloat(s.weight)||0));
+    if (maxW > 0) html += `<div class="ex-chip">Topp <span>${maxW} kg</span></div>`;
+    if (avgRpe !== null) html += `<div class="ex-chip">Snitt RPE <span>${avgRpe.toFixed(1)}</span></div>`;
+    html += `</div>`;
+
+    // Extra fields: knevinkel, smerte, kommentar
+    html += `<div class="ex-extra">
+      <div><label>Knevinkel°</label><input type="number" min="0" max="180" placeholder="—" value="${ex.angle||''}" oninput="${updateFn}(${ei},'angle',this.value)"></div>
+      <div><label>Smerte</label><input type="number" min="0" max="10" placeholder="0" value="${ex.pain||''}" oninput="${updateFn}(${ei},'pain',this.value)"></div>
+      <div><label>Kommentar</label><input type="text" placeholder="klikking, ubehag..." value="${ex.comment||''}" oninput="${updateFn}(${ei},'comment',this.value)"></div>
+    </div>`;
+
+    div.innerHTML = html;
     c.appendChild(div);
   });
 }
 
-function renderExercises() {
-  renderExercisesInto('exercises-container', exercises, 'updateEx', 'removeEx');
+function calcAvg(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null; }
+
+// ── NEW ENTRY HANDLERS ───────────────────────────────────────
+function updateEx(ei, field, val) { applyExUpdate(exercises, ei, field, val); rerenderNew(); }
+function removeEx(ei) { exercises.splice(ei,1); rerenderNew(); }
+function addSetNew(ei) { exercises[ei].sets.push(newSet()); rerenderNew(); }
+function removeSetNew(ei, si) { if(exercises[ei].sets.length>1) { exercises[ei].sets.splice(si,1); rerenderNew(); } }
+function addExercise() { exercises.push(newEx()); rerenderNew(); }
+function rerenderNew() { renderExercisesInto('exercises-container', exercises, 'updateEx', 'removeEx', 'addSetNew', 'removeSetNew'); }
+
+// ── EDIT HANDLERS ────────────────────────────────────────────
+function updateEditEx(ei, field, val) { applyExUpdate(editExercises, ei, field, val); rerenderEdit(); }
+function removeEditEx(ei) { editExercises.splice(ei,1); rerenderEdit(); }
+function addSetEdit(ei) { editExercises[ei].sets.push(newSet()); rerenderEdit(); }
+function removeSetEdit(ei, si) { if(editExercises[ei].sets.length>1) { editExercises[ei].sets.splice(si,1); rerenderEdit(); } }
+function editAddExercise() { editExercises.push(newEx()); rerenderEdit(); }
+function rerenderEdit() { renderExercisesInto('edit-exercises-container', editExercises, 'updateEditEx', 'removeEditEx', 'addSetEdit', 'removeSetEdit'); }
+
+// ── SHARED UPDATE LOGIC ──────────────────────────────────────
+function applyExUpdate(arr, ei, field, val) {
+  if (field.startsWith('set-')) {
+    const parts = field.split('-'); // ['set','reps'/'weight'/'rpe', si]
+    const prop = parts[1];
+    const si = parseInt(parts[2]);
+    while (arr[ei].sets.length <= si) arr[ei].sets.push(newSet());
+    arr[ei].sets[si][prop] = val;
+  } else {
+    arr[ei][field] = val;
+  }
 }
 
-// ── EDIT ──────────────────────────────────────────────────────
-let editId = null;
-let editExercises = [];
-
-function openEdit(id) {
-  const e = entries.find(e => e.id === id);
-  if (!e) return;
-  editId = id;
-  editExercises = e.exercises.map(x => ({...x}));
-  document.getElementById('e-date').value = e.date;
-  document.getElementById('e-pain-during').value = e.painDuring || '';
-  document.getElementById('e-pain-24').value = e.pain24h || '';
-  document.getElementById('e-pain-48').value = e.pain48h || '';
-  document.getElementById('e-notes').value = e.notes || '';
-  renderEditExercises();
-  document.getElementById('edit-modal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeEdit() {
-  document.getElementById('edit-modal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-function closeEditIfBg(evt) {
-  if (evt.target === document.getElementById('edit-modal')) closeEdit();
-}
-
-function renderEditExercises() {
-  renderExercisesInto('edit-exercises-container', editExercises, 'updateEditEx', 'removeEditEx');
-}
-
-function updateEditEx(idx, field, val) { editExercises[idx][field] = val; }
-
-function editAddExercise() {
-  editExercises.push(newEx());
-  renderEditExercises();
-}
-
-function removeEditEx(idx) {
-  editExercises.splice(idx, 1);
-  renderEditExercises();
-}
-
-function saveEdit() {
-  const idx = entries.findIndex(e => e.id === editId);
-  if (idx === -1) return;
-  entries[idx] = {
-    ...entries[idx],
-    date: document.getElementById('e-date').value,
-    exercises: editExercises.map(x => ({...x})),
-    painDuring: document.getElementById('e-pain-during').value,
-    pain24h: document.getElementById('e-pain-24').value,
-    pain48h: document.getElementById('e-pain-48').value,
-    notes: document.getElementById('e-notes').value,
-  };
-  closeEdit();
-  save();
-}
-
-
-function updateEx(idx, field, val) { exercises[idx][field] = val; }
-
-function addExercise() {
-  exercises.push(newEx());
-  renderExercises();
-}
-
-function removeEx(idx) {
-  exercises.splice(idx, 1);
-  renderExercises();
-}
-
+// ── SAVE ENTRY ───────────────────────────────────────────────
 function saveEntry() {
   const entry = {
     id: Date.now(),
     date: document.getElementById('f-date').value,
-    exercises: exercises.map(e => ({ ...e })),
+    exercises: exercises.map(e=>({...e, sets:e.sets.map(s=>({...s}))})),
     painDuring: document.getElementById('f-pain-during').value,
     pain24h: document.getElementById('f-pain-24').value,
     pain48h: document.getElementById('f-pain-48').value,
@@ -860,104 +425,117 @@ function saveEntry() {
   };
   if (!entry.date) { alert('Velg dato'); return; }
   entries.unshift(entry);
-  save();
-
+  saveData();
   exercises = [newEx()];
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
-  ['f-pain-during','f-pain-24','f-pain-48','f-notes'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  renderExercises();
+  ['f-pain-during','f-pain-24','f-pain-48','f-notes'].forEach(id => document.getElementById(id).value='');
+  rerenderNew();
   switchTab('history');
 }
 
+// ── EDIT MODAL ───────────────────────────────────────────────
+function openEdit(id) {
+  const e = entries.find(e=>e.id===id);
+  if (!e) return;
+  editId = id;
+  editExercises = e.exercises.map(x=>({...x, sets:(x.sets||[{reps:'',weight:'',rpe:''}]).map(s=>({...s}))}));
+  document.getElementById('e-date').value = e.date;
+  document.getElementById('e-pain-during').value = e.painDuring||'';
+  document.getElementById('e-pain-24').value = e.pain24h||'';
+  document.getElementById('e-pain-48').value = e.pain48h||'';
+  document.getElementById('e-notes').value = e.notes||'';
+  rerenderEdit();
+  document.getElementById('edit-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeEdit() { document.getElementById('edit-modal').style.display='none'; document.body.style.overflow=''; }
+function closeEditIfBg(evt) { if(evt.target===document.getElementById('edit-modal')) closeEdit(); }
+function saveEdit() {
+  const idx = entries.findIndex(e=>e.id===editId);
+  if (idx===-1) return;
+  entries[idx] = { ...entries[idx],
+    date: document.getElementById('e-date').value,
+    exercises: editExercises.map(x=>({...x, sets:x.sets.map(s=>({...s}))})),
+    painDuring: document.getElementById('e-pain-during').value,
+    pain24h: document.getElementById('e-pain-24').value,
+    pain48h: document.getElementById('e-pain-48').value,
+    notes: document.getElementById('e-notes').value,
+  };
+  closeEdit(); saveData();
+}
+
+// ── PAIN HELPERS ─────────────────────────────────────────────
+function pNum(v) { return (v!==''&&v!==null&&v!==undefined&&!isNaN(Number(v)))?Number(v):null; }
 function painColor(v) {
-  if (v === '' || v === null || v === undefined) return 'pain-none';
-  const n = Number(v);
-  if (n <= 2) return 'pain-green';
-  if (n <= 5) return 'pain-yellow';
-  return 'pain-red';
+  if (v===''||v===null||v===undefined) return 'pain-none';
+  return Number(v)<=2?'pain-green':Number(v)<=5?'pain-yellow':'pain-red';
 }
-
+function painHex(v) {
+  if (v===''||v===null||v===undefined) return '#9a9a92';
+  return Number(v)<=2?'#2d7a4f':Number(v)<=5?'#d4890a':'#c0392b';
+}
 function painHTML(v) {
-  if (v === '' || v === null || v === undefined) return '<span class="pain-none">—</span>';
-  const cls = painColor(v);
-  const colors = { 'pain-green': '#2d7a4f', 'pain-yellow': '#d4890a', 'pain-red': '#c0392b', 'pain-none': '#9a9a92' };
-  return `<span class="${cls}" style="font-weight:700"><span class="dot" style="background:${colors[cls]}"></span>${v}/10</span>`;
+  if (v===''||v===null||v===undefined) return '<span class="pain-none">—</span>';
+  const cls=painColor(v);
+  return `<span class="${cls}" style="font-weight:700"><span class="dot" style="background:${painHex(v)}"></span>${v}/10</span>`;
 }
 
+// ── PENDING ──────────────────────────────────────────────────
 function renderPending() {
   const now = Date.now();
   const pending = entries.filter(e => {
-    const h = (now - new Date(e.date).getTime()) / 3600000;
-    return h >= 24 && h <= 120 && (e.pain48h === '' || e.pain24h === '');
+    const h = (now-new Date(e.date).getTime())/3600000;
+    return h>=24&&h<=120&&(e.pain48h===''||e.pain24h==='');
   });
   const c = document.getElementById('pending-container');
-  if (!pending.length) { c.innerHTML = ''; return; }
+  if (!pending.length) { c.innerHTML=''; return; }
   let html = `<div class="pending-box"><div class="pending-title">⏰ REGISTRER SMERTERESPONS</div>`;
   pending.forEach(e => {
-    const h = Math.round((now - new Date(e.date).getTime()) / 3600000);
+    const h = Math.round((now-new Date(e.date).getTime())/3600000);
     html += `<div class="pending-card"><div class="pending-inner">
-      <div>
-        <div style="font-size:14px;font-weight:700">${e.date}</div>
-        <div style="font-size:12px;color:#a07010">${h}t siden</div>
-      </div>
+      <div><div style="font-size:14px;font-weight:700">${e.date}</div><div style="font-size:12px;color:#a07010">${h}t siden</div></div>
       <div class="pending-fields">
-        ${h >= 24 && e.pain24h === '' ? `<div class="pending-field"><label>24t smerte</label><input type="number" min="0" max="10" placeholder="0–10" onchange="updatePain24(${e.id},this.value)"></div>` : ''}
-        ${h >= 48 ? `<div class="pending-field"><label>48t smerte</label><input type="number" min="0" max="10" placeholder="0–10" onchange="updatePain48(${e.id},this.value)"></div>` : ''}
+        ${h>=24&&e.pain24h===''?`<div class="pending-field"><label>24t smerte</label><input type="number" min="0" max="10" placeholder="0–10" onchange="updatePain24(${e.id},this.value)"></div>`:''}
+        ${h>=48?`<div class="pending-field"><label>48t smerte</label><input type="number" min="0" max="10" placeholder="0–10" onchange="updatePain48(${e.id},this.value)"></div>`:''}
       </div>
     </div></div>`;
   });
   html += '</div>';
   c.innerHTML = html;
 }
+function updatePain24(id,val){const e=entries.find(e=>e.id==id);if(e){e.pain24h=val;saveData();}}
+function updatePain48(id,val){const e=entries.find(e=>e.id==id);if(e){e.pain48h=val;saveData();}}
 
-function updatePain24(id, val) {
-  const e = entries.find(e => e.id == id);
-  if (e) { e.pain24h = val; save(); }
-}
-
-function updatePain48(id, val) {
-  const e = entries.find(e => e.id == id);
-  if (e) { e.pain48h = val; save(); }
-}
-
-function toggleEntry(id) {
-  expandedId = expandedId === id ? null : id;
-  renderHistory();
-}
-
+// ── HISTORY ──────────────────────────────────────────────────
+function toggleEntry(id) { expandedId=expandedId===id?null:id; renderHistory(); }
 function deleteEntry(id) {
-  if (!confirm('Slette denne økten?')) return;
-  entries = entries.filter(e => e.id !== id);
-  if (expandedId === id) expandedId = null;
-  save();
+  if(!confirm('Slette denne økten?')) return;
+  entries=entries.filter(e=>e.id!==id);
+  if(expandedId===id) expandedId=null;
+  saveData();
 }
 
 function renderHistory() {
   const c = document.getElementById('history-container');
   if (!entries.length) {
-    c.innerHTML = `<div class="empty-state">Ingen økter registrert ennå.<br><span class="empty-link" onclick="switchTab('log')">Registrer din første økt →</span></div>`;
+    c.innerHTML=`<div class="empty-state">Ingen økter registrert ennå.<br><span class="empty-link" onclick="switchTab('log')">Registrer din første økt →</span></div>`;
     return;
   }
-  let html = '';
+  let html='';
   entries.forEach(e => {
-    const exNames = e.exercises.filter(x => x.name).map(x => x.name).join(' · ');
-    const isOpen = expandedId === e.id;
-    const notesSnippet = e.notes ? `<div class="entry-notes-preview">${e.notes.length > 60 ? e.notes.slice(0,60) + '…' : e.notes}</div>` : '';
+    const exNames = e.exercises.filter(x=>x.name).map(x=>x.name).join(' · ');
+    const isOpen = expandedId===e.id;
+    const notesSnippet = e.notes?`<div class="entry-notes-preview">${e.notes.length>60?e.notes.slice(0,60)+'…':e.notes}</div>`:'';
     html += `<div class="entry-card">
       <div class="entry-header" onclick="toggleEntry(${e.id})">
         <div style="flex:1;min-width:0">
           <div class="entry-date">${e.date}</div>
-          <div class="entry-exnames">${exNames || '—'}</div>
+          <div class="entry-exnames">${exNames||'—'}</div>
           ${notesSnippet}
         </div>
         <div class="entry-right">
-          <div>
-            <div class="pain-label">48t</div>
-            ${painHTML(e.pain48h)}
-          </div>
-          <span class="chevron">${isOpen ? '▲' : '▼'}</span>
+          <div><div class="pain-label">48t</div>${painHTML(e.pain48h)}</div>
+          <span class="chevron">${isOpen?'▲':'▼'}</span>
         </div>
       </div>`;
 
@@ -969,43 +547,238 @@ function renderHistory() {
           <div class="pain-item"><label>Smerte 48t</label><div class="val">${painHTML(e.pain48h)}</div></div>
         </div>`;
 
-      const validEx = e.exercises.filter(x => x.name);
+      const validEx = e.exercises.filter(x=>x.name);
       if (validEx.length) {
-        const hasPainOrComment = validEx.some(x => x.pain !== '' || x.comment);
-        const hasAngle = validEx.some(x => x.angle);
-        html += `<div class="section-label">Øvelser</div>
-          <table><thead><tr>
-            <th>Øvelse</th><th>Sett</th><th>Reps</th><th>Kg</th><th>%/RPE</th>
-            ${hasAngle ? '<th>Vinkel°</th>' : ''}
-            ${hasPainOrComment ? '<th>Smerte</th><th>Kommentar</th>' : ''}
-          </tr></thead><tbody>`;
+        html += `<div class="section-label">Øvelser</div>`;
         validEx.forEach(x => {
-          html += `<tr>
-            <td>${x.name}</td>
-            <td>${x.sets||'—'}</td>
-            <td>${x.reps||'—'}</td>
-            <td>${x.weight||'—'}</td>
-            <td>${x.intensity||'—'}</td>
-            ${hasAngle ? `<td>${x.angle ? x.angle+'°' : '—'}</td>` : ''}
-            ${hasPainOrComment ? `<td>${painHTML(x.pain)}</td><td class="td-comment">${x.comment||'—'}</td>` : ''}
-          </tr>`;
+          const sets = x.sets||[];
+          const avgRpe = calcAvg(sets.map(s=>parseFloat(s.rpe)).filter(v=>!isNaN(v)&&v>0));
+          const maxW   = Math.max(...sets.map(s=>parseFloat(s.weight)||0));
+          const totalV = sets.reduce((a,s)=>{const w=parseFloat(s.weight)||0;const r=parseInt(s.reps)||0;return a+w*r;},0);
+
+          html += `<div class="ex-detail">
+            <div class="ex-detail-header">
+              <div class="ex-detail-name">${x.name}</div>
+              <div style="font-size:12px;color:var(--text3)">${sets.length} sett</div>
+            </div>
+            <div class="ex-detail-chips">
+              ${maxW>0?`<div class="ex-detail-chip">Topp <span>${maxW} kg</span></div>`:''}
+              ${avgRpe!==null?`<div class="ex-detail-chip">RPE <span>${avgRpe.toFixed(1)}</span></div>`:''}
+              ${x.angle?`<div class="ex-detail-chip">Vinkel <span>${x.angle}°</span></div>`:''}
+              ${x.pain!==''?`<div class="ex-detail-chip">Smerte <span>${x.pain}/10</span></div>`:''}
+              ${x.comment?`<div class="ex-detail-chip"><span>${x.comment}</span></div>`:''}
+            </div>`;
+
+          if (sets.length) {
+            html += `<table class="sets-table"><thead><tr><th>#</th><th>Reps</th><th>Kg</th><th>RPE</th></tr></thead><tbody>`;
+            sets.forEach((s,si) => {
+              html += `<tr><td>${si+1}</td><td>${s.reps||'—'}</td><td>${s.weight||'—'}</td><td>${s.rpe||'—'}</td></tr>`;
+            });
+            html += `</tbody></table>`;
+          }
+          html += `</div>`;
         });
-        html += `</tbody></table>`;
       }
 
-      if (e.notes) {
-        html += `<div class="section-label">Notater</div><div class="notes-text">${e.notes}</div>`;
-      }
+      if (e.notes) html += `<div class="section-label">Notater</div><div class="notes-text">${e.notes}</div>`;
 
       html += `<div style="margin-top:14px">
         <button class="edit-btn" onclick="openEdit(${e.id})">✏️ Rediger</button>
         <button class="del-btn" onclick="deleteEntry(${e.id})">Slett økt</button>
-      </div>`;
-      html += `</div>`;
+      </div></div>`;
     }
     html += `</div>`;
   });
   c.innerHTML = html;
+}
+
+// ── STATISTICS ───────────────────────────────────────────────
+function setExFilter(name) { statsExFilter=name; renderStats(); }
+
+function renderStats() {
+  const c = document.getElementById('stats-container');
+  const sorted = [...entries].sort((a,b)=>a.date.localeCompare(b.date));
+  if (!sorted.length) {
+    c.innerHTML=`<div class="empty-state">Ingen data ennå.<br><span class="empty-link" onclick="switchTab('log')">Registrer din første økt →</span></div>`;
+    return;
+  }
+
+  const pain48vals = sorted.map(e=>pNum(e.pain48h)).filter(v=>v!==null);
+  const avgPain48  = pain48vals.length?(pain48vals.reduce((a,b)=>a+b,0)/pain48vals.length).toFixed(1):'—';
+  const trend48 = pain48vals.length>=2
+    ? (pain48vals[pain48vals.length-1]-pain48vals[0]<0?'↓ Bedre':pain48vals[pain48vals.length-1]-pain48vals[0]>0?'↑ Verre':'→ Stabil')
+    : '—';
+  const trendColor = trend48==='↓ Bedre'?'var(--green)':trend48==='↑ Verre'?'var(--red)':'var(--text3)';
+
+  const allExNames = [...new Set(sorted.flatMap(e=>e.exercises.filter(x=>x.name).map(x=>x.name)))];
+
+  // Per-exercise stats
+  const exStats = {};
+  allExNames.forEach(name => {
+    const instances = sorted.flatMap(e=>e.exercises.filter(x=>x.name===name).map(x=>({...x,date:e.date})));
+    const allSets   = instances.flatMap(x=>(x.sets||[]));
+    const weights   = allSets.map(s=>parseFloat(s.weight)).filter(w=>!isNaN(w)&&w>0);
+    const rpes      = allSets.map(s=>parseFloat(s.rpe)).filter(r=>!isNaN(r)&&r>0);
+    const painVals  = instances.map(x=>pNum(x.pain)).filter(v=>v!==null);
+    // weight history: one point per session (max weight that session)
+    const weightHistory = instances.map(x=>({
+      date:x.date,
+      weight: Math.max(...(x.sets||[]).map(s=>parseFloat(s.weight)||0).filter(w=>w>0), 0)||null
+    })).filter(h=>h.weight);
+    exStats[name] = {
+      sessions: [...new Set(instances.map(x=>x.date))].length,
+      bestWeight: weights.length?Math.max(...weights):null,
+      avgRpe: rpes.length?calcAvg(rpes):null,
+      avgPain: painVals.length?calcAvg(painVals):null,
+      weightHistory,
+    };
+  });
+
+  const activeFilter = statsExFilter&&allExNames.includes(statsExFilter)?statsExFilter:null;
+  let html='';
+
+  // Summary tiles
+  html += `<div class="summary-grid">
+    <div class="summary-tile"><div class="tile-val">${sorted.length}</div><div class="tile-lbl">Økter</div></div>
+    <div class="summary-tile"><div class="tile-val">${avgPain48}</div><div class="tile-lbl">Snitt 48t</div></div>
+    <div class="summary-tile"><div class="tile-val" style="color:${trendColor};font-size:16px">${trend48}</div><div class="tile-lbl">Trend</div></div>
+  </div>`;
+
+  // Pain over time chart (3 lines: under, 24h, 48h)
+  const painEntries = sorted.filter(e=>pNum(e.pain48h)!==null||pNum(e.painDuring)!==null||pNum(e.pain24h)!==null);
+  if (painEntries.length>=2) {
+    html += `<div class="trend-card">
+      <div class="trend-title">Smertetrend over tid</div>
+      <div class="chart-wrap"><canvas id="pain-chart" height="190"></canvas></div>
+    </div>`;
+  }
+
+  // Exercise filter pills
+  if (allExNames.length>1) {
+    html += `<div class="trend-card">
+      <div class="trend-title">Filtrer øvelse</div>
+      <div class="ex-pills">
+        <div class="pill ${!activeFilter?'active':''}" onclick="setExFilter(null)">Alle</div>
+        ${allExNames.map(n=>`<div class="pill ${activeFilter===n?'active':''}" onclick="setExFilter(${JSON.stringify(n)})">${n}</div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Exercise performance
+  const exToShow = activeFilter?[activeFilter]:allExNames;
+  html += `<div class="trend-card"><div class="trend-title">Beste løft per øvelse</div>`;
+  exToShow.forEach(name => {
+    const s=exStats[name];
+    html += `<div class="ex-stat-row">
+      <div class="ex-stat-name">${name}</div>
+      <div class="ex-stat-vals">
+        <span>${s.sessions} økt${s.sessions!==1?'er':''}</span>
+        ${s.bestWeight!==null?`<span class="ex-stat-best">${s.bestWeight} kg</span>`:''}
+        ${s.avgRpe!==null?`<span>RPE ${s.avgRpe.toFixed(1)}</span>`:''}
+        ${s.avgPain!==null?`<span style="color:${painHex(s.avgPain)}">${s.avgPain.toFixed(1)}/10</span>`:''}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Weight trend chart
+  const exForChart = activeFilter||allExNames.reduce((best,n)=>exStats[n].sessions>(exStats[best]?.sessions||0)?n:best,allExNames[0]);
+  const wh = exStats[exForChart]?.weightHistory||[];
+  if (wh.length>=2) {
+    html += `<div class="trend-card">
+      <div class="trend-title">Vektutvikling – ${exForChart}</div>
+      <div class="chart-wrap"><canvas id="weight-chart" height="160"></canvas></div>
+    </div>`;
+  }
+
+  // Pain per session list
+  html += `<div class="trend-card"><div class="trend-title">Smerte per økt (siste 8)</div>`;
+  [...sorted].reverse().slice(0,8).forEach(e=>{
+    const p=pNum(e.pain48h); const pd=pNum(e.painDuring); const val=p!==null?p:pd;
+    html += `<div class="pain-trend-row">
+      <div class="pain-trend-date">${e.date.slice(5)}</div>
+      <div class="pain-bar-wrap">
+        ${val!==null
+          ?`<div class="pain-bar" style="width:${Math.max(6,(val/10)*100)}%;background:${painHex(val)}"></div><span style="font-size:12px;font-weight:700;color:${painHex(val)}">${val}/10 ${p!==null?'(48t)':'(under)'}</span>`
+          :`<span style="color:var(--text3);font-size:12px">Ikke registrert</span>`}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  c.innerHTML = html;
+
+  // Draw pain chart
+  if (painEntries.length>=2) {
+    drawLineChart('pain-chart', painEntries.map(e=>({
+      label:e.date.slice(5), v1:pNum(e.painDuring), v2:pNum(e.pain24h), v3:pNum(e.pain48h)
+    })), ['Under','24t','48t'], ['#d4890a','#7b6cf0','#3d6b4f']);
+  }
+  if (wh.length>=2) {
+    drawLineChart('weight-chart', wh.map(h=>({label:h.date.slice(5),v1:h.weight,v2:null,v3:null})), ['Kg'],['#3d6b4f'], true);
+  }
+}
+
+// ── CHART RENDERER ───────────────────────────────────────────
+function drawLineChart(canvasId, data, seriesNames, colors, integer=false) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.offsetWidth||300;
+  const H=parseInt(canvas.getAttribute('height'))||160;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  const pad={top:28,right:14,bottom:32,left:34};
+  const cw=W-pad.left-pad.right, ch=H-pad.top-pad.bottom;
+  const series=[data.map(d=>d.v1),data.map(d=>d.v2),data.map(d=>d.v3)].slice(0,seriesNames.length);
+  const allVals=series.flat().filter(v=>v!==null&&v!==undefined);
+  if (!allVals.length) return;
+  const minV=Math.min(...allVals), maxV=Math.max(...allVals), range=maxV-minV||1;
+  const xPos=i=>pad.left+(data.length>1?(i/(data.length-1))*cw:cw/2);
+  const yPos=v=>pad.top+ch-((v-minV)/range)*ch;
+
+  // Grid
+  ctx.strokeStyle='#e2e2dc'; ctx.lineWidth=1;
+  [0,.25,.5,.75,1].forEach(f=>{
+    const y=pad.top+ch*(1-f);
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(pad.left+cw,y); ctx.stroke();
+    ctx.fillStyle='#9a9a92'; ctx.font='9px DM Mono,monospace'; ctx.textAlign='right';
+    ctx.fillText((minV+range*f).toFixed(integer?0:1), pad.left-4, y+3);
+  });
+
+  // X labels
+  ctx.fillStyle='#9a9a92'; ctx.font='9px DM Mono,monospace'; ctx.textAlign='center';
+  const step=Math.max(1,Math.floor(data.length/6));
+  data.forEach((d,i)=>{ if(i%step===0||i===data.length-1) ctx.fillText(d.label,xPos(i),H-6); });
+
+  // Series
+  series.forEach((s,si)=>{
+    const pts=s.map((v,i)=>(v!==null&&v!==undefined)?{x:xPos(i),y:yPos(v)}:null).filter(Boolean);
+    if (!pts.length) return;
+    ctx.strokeStyle=colors[si]; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.lineCap='round';
+    if (pts.length>=2) {
+      ctx.beginPath();
+      pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.stroke();
+    }
+    pts.forEach(p=>{
+      ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2);
+      ctx.fillStyle=colors[si]; ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+    });
+  });
+
+  // Legend
+  let lx=pad.left;
+  seriesNames.forEach((n,i)=>{
+    ctx.fillStyle=colors[i]; ctx.fillRect(lx,pad.top-14,14,3);
+    ctx.fillStyle='#5a5a54'; ctx.font='10px DM Sans,sans-serif'; ctx.textAlign='left';
+    ctx.fillText(n,lx+18,pad.top-10);
+    lx+=ctx.measureText(n).width+32;
+  });
 }
 
 load();
